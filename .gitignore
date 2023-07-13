@@ -1,0 +1,22 @@
+# Backend Node.js dependencies
+/node_modules/
+
+# Frontend Node.js dependencies
+/frontend/node_modules/
+
+# Frontend build output
+/frontend/build
+
+# Backend configuration file
+/backend/config/config.env
+
+# Frontend environment variables
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Logs and debugging files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
