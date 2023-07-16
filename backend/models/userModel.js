@@ -63,21 +63,6 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpire: Date,
 });
 
-// Handle duplicate key errors
-userSchema.post("save", function (error, doc, next) {
-  if (error.code === 11000) {
-    if (error.keyPattern && error.keyPattern.username) {
-      next(new Error("Username already taken"));
-    } else if (error.keyPattern && error.keyPattern.email) {
-      next(new Error("Email already taken"));
-    } else {
-      next(error);
-    }
-  } else {
-    next(error);
-  }
-});
-
 // Encrypting password before saving user
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

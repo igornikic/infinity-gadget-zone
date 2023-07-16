@@ -8,7 +8,7 @@
     "start": "node backend/server.js",
     "dev": "NODE_ENV=DEVELOPMENT& nodemon backend/server",
     "prod": "NODE_ENV=PRODUCTION& nodemon backend/server",
-    "test": "jest --verbose"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "keywords": [
     "e-commerce",
