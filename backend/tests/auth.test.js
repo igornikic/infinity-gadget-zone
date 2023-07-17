@@ -270,7 +270,7 @@ describe("POST /api/login", () => {
         // Assert that the response contains a token
         expect(res.body).toHaveProperty("token");
 
-        // Assert that the response contains the registered user's information
+        // Assert that the response contains the logged user's information
         expect(res.body).toHaveProperty("user");
         expect(res.body.user).toHaveProperty("username", "testUser");
         expect(res.body.user).toHaveProperty("email", "testUser@gmail.com");
@@ -348,6 +348,21 @@ describe("POST /api/login", () => {
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", { statusCode: 401 });
         expect(res.body).toHaveProperty("message", "Invalid Email or Password");
+        done();
+      });
+  });
+});
+
+describe("GET /api/logout", () => {
+  it("should logout user and set token to null", (done) => {
+    request(app)
+      .get("/api/logout")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty("message", "Logged out");
         done();
       });
   });

@@ -1,9 +1,13 @@
 import User from "../models/userModel.js";
 
 import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import sendUserToken from "../utils/userToken.js";
+
+// Setting up config file
+dotenv.config({ path: "backend/config/config.env" });
 
 // @desc    Register user
 // @route   POST /api/register
@@ -80,4 +84,20 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   sendUserToken(user, 200, res);
+});
+
+// @desc    Logout user
+// @route   GET /api/logout
+// @access  Public
+export const logout = catchAsyncErrors(async (req, res, next) => {
+  // Set the token cookie to null and set the expires date to the current time
+  res.cookie("user_token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out",
+  });
 });
