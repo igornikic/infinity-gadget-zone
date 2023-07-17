@@ -53,3 +53,31 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
     }
   }
 });
+
+// @desc    Login user
+// @route   POST /api/login
+// @access  Public
+export const loginUser = catchAsyncErrors(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Check if email and password is entered by user
+  if (!email || !password) {
+    return next(new ErrorHandler("Please enter email and password", 400));
+  }
+
+  // Find user in database
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid Email or Password", 401));
+  }
+
+  // Check if password is correct or not
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid Email or Password", 401));
+  }
+
+  sendUserToken(user, 200, res);
+});

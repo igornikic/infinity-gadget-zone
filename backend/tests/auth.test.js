@@ -41,8 +41,8 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-describe("POST /api/register", function () {
-  it("should register a new user and return a token", function (done) {
+describe("POST /api/register", () => {
+  it("should register a new user and return a token", (done) => {
     request(app)
       .post("/api/register")
       .send({
@@ -57,7 +57,7 @@ describe("POST /api/register", function () {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(201)
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         const publicId = res.body.user.avatar.public_id;
@@ -85,7 +85,7 @@ describe("POST /api/register", function () {
       });
   });
 
-  it("should return an error if passwords do not match", function (done) {
+  it("should return an error if passwords do not match", (done) => {
     request(app)
       .post("/api/register")
       .send({
@@ -100,7 +100,7 @@ describe("POST /api/register", function () {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(400)
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         // Assert that the response contains the error message
@@ -111,7 +111,7 @@ describe("POST /api/register", function () {
       });
   });
 
-  it("should return an error if the username is already taken", function (done) {
+  it("should return an error if the username is already taken", (done) => {
     // Create a mock user
     const mockUser = {
       username: "testUser3",
@@ -128,7 +128,7 @@ describe("POST /api/register", function () {
       .post("/api/register")
       .send(mockUser)
       .set("Accept", "application/json")
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         const publicId = res.body.user.avatar.public_id;
@@ -141,7 +141,7 @@ describe("POST /api/register", function () {
           .set("Accept", "application/json")
           .expect("Content-Type", /json/)
           .expect(409)
-          .end(function (err, res) {
+          .end((err, res) => {
             if (err) return done(err);
 
             // Assert that the response contains the error message
@@ -160,7 +160,7 @@ describe("POST /api/register", function () {
       });
   });
 
-  it("should return an error if email is already taken", function (done) {
+  it("should return an error if email is already taken", (done) => {
     request(app)
       .post("/api/register")
       .send({
@@ -175,7 +175,7 @@ describe("POST /api/register", function () {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(409)
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         // Assert that the response contains the error message
@@ -189,7 +189,7 @@ describe("POST /api/register", function () {
       });
   });
 
-  it("should return an error if required fields are empty", function (done) {
+  it("should return an error if required fields are empty", (done) => {
     request(app)
       .post("/api/register")
       .send({
@@ -204,7 +204,7 @@ describe("POST /api/register", function () {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(400)
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         // Assert that the response contains the error message
@@ -221,7 +221,7 @@ describe("POST /api/register", function () {
       });
   });
 
-  it("should return an error if username is not at least 3 characters long", function (done) {
+  it("should return an error if username is not at least 3 characters long", (done) => {
     request(app)
       .post("/api/register")
       .send({
@@ -236,7 +236,7 @@ describe("POST /api/register", function () {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(400)
-      .end(function (err, res) {
+      .end((err, res) => {
         if (err) return done(err);
 
         // Assert that the response contains the error message
@@ -248,6 +248,106 @@ describe("POST /api/register", function () {
           "message",
           "ValidationError: username: Your username must be at least 3 characters long"
         );
+        done();
+      });
+  });
+});
+
+describe("POST /api/login", () => {
+  it("should login user and return a token", (done) => {
+    request(app)
+      .post("/api/login")
+      .send({
+        email: "testUser@gmail.com",
+        password: "password123",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains a token
+        expect(res.body).toHaveProperty("token");
+
+        // Assert that the response contains the registered user's information
+        expect(res.body).toHaveProperty("user");
+        expect(res.body.user).toHaveProperty("username", "testUser");
+        expect(res.body.user).toHaveProperty("email", "testUser@gmail.com");
+
+        // Assert that the response contains the options for the "user_token" cookie
+        expect(res.body).toHaveProperty("options");
+        expect(res.body.options).toHaveProperty("expires");
+        expect(res.body.options).toHaveProperty("httpOnly", true);
+        expect(res.body.options).toHaveProperty("sameSite", "none");
+        expect(res.body.options).toHaveProperty("path", "/");
+
+        done();
+      });
+  });
+
+  it("should return an error if email or password is empty", (done) => {
+    request(app)
+      .post("/api/login")
+      .send({
+        email: "",
+        password: "password123",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Please enter email and password"
+        );
+        done();
+      });
+  });
+
+  it("should return an error if password is incorrect", (done) => {
+    request(app)
+      .post("/api/login")
+      .send({
+        email: "testUser@gmail.com",
+        password: "password456",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 401 });
+        expect(res.body).toHaveProperty("message", "Invalid Email or Password");
+        done();
+      });
+  });
+
+  it("should return an error if email is invalid", (done) => {
+    request(app)
+      .post("/api/login")
+      .send({
+        email: "testUser.com",
+        password: "password123",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 401 });
+        expect(res.body).toHaveProperty("message", "Invalid Email or Password");
         done();
       });
   });
