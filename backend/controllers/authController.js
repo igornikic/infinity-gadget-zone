@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 
 import { v2 as cloudinary } from "cloudinary";
+import crypto from "crypto";
 import dotenv from "dotenv";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
@@ -19,7 +20,7 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
 
   // Check if the password and confirmPassword match
   if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorHandler("Password does not match", 400));
+    return next(new ErrorHandler("Passwords do not match", 400));
   }
 
   // Upload the avatar image to Cloudinary
@@ -128,6 +129,45 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
     return next(new ErrorHandler(error.message, 500));
   }
+});
+
+// @desc    Reset password using a token
+// @route   PUT /api/password/reset/:token
+// @access  Public
+export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+  // Hash URL token
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new ErrorHandler(
+        "Password reset token is invalid or has been expired",
+        400
+      )
+    );
+  }
+
+  if (req.body.password !== req.body.confirmPassword) {
+    return next(new ErrorHandler("Passwords do not match", 400));
+  }
+
+  // Setup new password
+  user.password = req.body.password;
+
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  sendUserToken(user, 200, res);
 });
 
 // @desc    Logout user

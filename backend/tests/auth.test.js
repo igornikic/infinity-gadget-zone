@@ -106,7 +106,7 @@ describe("POST /api/register", () => {
         // Assert that the response contains the error message
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", { statusCode: 400 });
-        expect(res.body).toHaveProperty("message", "Password does not match");
+        expect(res.body).toHaveProperty("message", "Passwords do not match");
         done();
       });
   });

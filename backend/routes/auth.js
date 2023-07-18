@@ -3,8 +3,9 @@ import express from "express";
 import {
   registerUser,
   loginUser,
-  logout,
   forgotPassword,
+  resetPassword,
+  logout,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.route("/login").post(loginUser);
 
 // Reset password routes
 router.route("/password/forgot").post(forgotPassword);
+router.route("/password/reset/:token").put(resetPassword);
 
 // Unauthenticate user route
 router.route("/logout").get(logout);
