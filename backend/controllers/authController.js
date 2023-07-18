@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import sendEmail from "../utils/sendEmail.js";
 import sendUserToken from "../utils/userToken.js";
 
 // Setting up config file
@@ -84,6 +85,49 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   sendUserToken(user, 200, res);
+});
+
+// @desc    Request password reset
+// @route   POST /api/password/forgot
+// @access  Public
+export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email", 404));
+  }
+
+  // Get reset token
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  // Set the frontend URL
+  const frontendUrl = process.env.FRONTEND_URL;
+  // Create reset password url
+  const resetUrl = `${frontendUrl}/password/reset/${resetToken}`;
+
+  const message = `Your password reset token is:\n\n${resetUrl}\n\nIf you have not requested this email, then ignore it.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password Recovery",
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to: ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler(error.message, 500));
+  }
 });
 
 // @desc    Logout user

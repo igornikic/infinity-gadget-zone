@@ -3,7 +3,7 @@
 
 # Backend mocks and coverages
 /backend/__mocks__/
-/coverage/
+coverage/
 
 # Frontend Node.js dependencies
 /frontend/node_modules/
