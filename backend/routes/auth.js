@@ -6,9 +6,12 @@ import {
   forgotPassword,
   resetPassword,
   logout,
+  getUserProfile,
 } from "../controllers/authController.js";
 
 const router = express.Router();
+
+import { isAuthenticatedUser, authorizeRoles } from "../middlewares/auth.js";
 
 // Authenticate user routes
 router.route("/register").post(registerUser);
@@ -20,5 +23,8 @@ router.route("/password/reset/:token").put(resetPassword);
 
 // Unauthenticate user route
 router.route("/logout").get(logout);
+
+// Private / Authenticated user routes
+router.route("/me").get(isAuthenticatedUser, getUserProfile);
 
 export default router;

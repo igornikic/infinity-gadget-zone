@@ -185,3 +185,15 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     message: "Logged out",
   });
 });
+
+// @desc    Get user profile
+// @route   GET /api/me
+// @access  Private
+export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
