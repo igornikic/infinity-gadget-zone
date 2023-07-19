@@ -7,6 +7,7 @@ import {
   resetPassword,
   logout,
   getUserProfile,
+  updatePassword,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.route("/logout").get(logout);
 
 // Private / Authenticated user routes
 router.route("/me").get(isAuthenticatedUser, getUserProfile);
+router.route("/password/update").put(isAuthenticatedUser, updatePassword);
 
 export default router;

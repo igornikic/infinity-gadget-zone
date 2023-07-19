@@ -197,3 +197,36 @@ export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+// @desc    Change password
+// @route   PUT /api/password/update
+// @access  Private
+export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select("+password");
+
+  // Check previous user password
+  const isMatched = await user.comparePassword(req.body.oldPassword);
+  if (!isMatched) {
+    return next(new ErrorHandler("Old password is incorrect", 400));
+  }
+
+  // Verify new password
+  if (req.body.password !== req.body.confirmPassword) {
+    return next(
+      new ErrorHandler("Password and Confirm Password do not match", 400)
+    );
+  }
+
+  // Check if new password is different
+  if (
+    req.body.oldPassword === req.body.password &&
+    req.body.password === req.body.confirmPassword
+  ) {
+    return next(new ErrorHandler("Password change failed", 400));
+  }
+
+  user.password = req.body.password;
+  await user.save();
+
+  sendUserToken(user, 200, res);
+});

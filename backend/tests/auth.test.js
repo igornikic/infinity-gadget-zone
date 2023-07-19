@@ -367,3 +367,21 @@ describe("GET /api/logout", () => {
       });
   });
 });
+
+describe("GET /api/me", () => {
+  it("should return error if user is not authorized", (done) => {
+    request(app)
+      .get("/api/me")
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty(
+          "message",
+          "Login first to access this resource"
+        );
+        done();
+      });
+  });
+});

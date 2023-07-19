@@ -10,7 +10,7 @@ export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const { user_token } = req.cookies;
 
   if (!user_token) {
-    return next(new ErrorHandler("Login first to access this resource.", 401));
+    return next(new ErrorHandler("Login first to access this resource", 401));
   }
 
   // Verify the token using the secret key and set req.user to the user with the id decoded from the token
