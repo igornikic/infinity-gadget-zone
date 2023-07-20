@@ -295,3 +295,22 @@ export const allUsers = catchAsyncErrors(async (req, res, next) => {
     users,
   });
 });
+
+// @desc    Get user details by ID (Admin only)
+// @route   GET /api/admin/user/:id
+// @access  Private/Admin
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  // Find user by id
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
