@@ -230,3 +230,54 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 
   sendUserToken(user, 200, res);
 });
+
+// @desc    Update profile
+// @route   PUT /api/me/update
+// @access  Private
+export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  const newUserData = {
+    username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+  };
+
+  // Check if avatar has changed
+  if (req.body.avatar !== user.avatar.url) {
+    // Find and delete existing avatar in cloudinary
+    const image_id = user.avatar.public_id;
+    await cloudinary.uploader.destroy(image_id);
+
+    // Upload new avatar to cloudinary
+    const result = await cloudinary.uploader.upload(req.body.avatar, {
+      folder: "IGZavatars",
+      width: 150,
+      crop: "scale",
+    });
+
+    newUserData.avatar = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  } else {
+    // Use existing avatar
+    newUserData.avatar = {
+      public_id: user.avatar.public_id,
+      url: user.avatar.url,
+    };
+  }
+
+  // Update user by id
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+    user: updatedUser,
+  });
+});

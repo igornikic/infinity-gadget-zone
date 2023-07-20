@@ -8,6 +8,7 @@ import {
   logout,
   getUserProfile,
   updatePassword,
+  updateProfile,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.route("/logout").get(logout);
 // Private / Authenticated user routes
 router.route("/me").get(isAuthenticatedUser, getUserProfile);
 router.route("/password/update").put(isAuthenticatedUser, updatePassword);
+router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 
 export default router;
