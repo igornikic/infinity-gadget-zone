@@ -281,3 +281,17 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     user: updatedUser,
   });
 });
+
+// Admin Routes
+
+// @desc    Get all users (Admin only)
+// @route   GET /api/admin/users
+// @access  Private/Admin
+export const allUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});

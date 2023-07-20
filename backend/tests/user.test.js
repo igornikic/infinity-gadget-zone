@@ -17,8 +17,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Variable to store the user token
+// Variable to store user token for user account
 let userToken;
+// Variable to store user token for admin account
+let adminToken;
 // Variable to store avatar url retrieved from cloudinary
 let avatarUrl;
 
@@ -30,7 +32,7 @@ beforeAll(async () => {
     email: "testg123789@gmail.com",
     password: "sickPassword!",
   });
-  userToken = res.body.token;
+  adminToken = res.body.token;
   avatarUrl = res.body.user.avatar.url;
 });
 
@@ -44,7 +46,7 @@ describe("GET /api/me", () => {
     request(app)
       .get("/api/me")
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -69,7 +71,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "sickPassword123!",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -101,7 +103,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "sickPassword123!",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(400)
       .end((err, res) => {
@@ -125,7 +127,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "123456789",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(400)
       .end((err, res) => {
@@ -152,7 +154,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "sickPassword123!",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(400)
       .end((err, res) => {
@@ -176,7 +178,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "123",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(422)
       .end((err, res) => {
@@ -203,7 +205,7 @@ describe("PUT /api/password/update", () => {
         confirmPassword: "sickPassword!",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -239,7 +241,7 @@ describe("PUT /api/me/update", () => {
         avatar: avatarUrl,
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -267,7 +269,7 @@ describe("PUT /api/me/update", () => {
         avatar: testAvatar2,
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -295,7 +297,7 @@ describe("PUT /api/me/update", () => {
         avatar: testAvatar2,
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
+      .set("Cookie", [`user_token=${adminToken}`])
       .expect("Content-Type", /json/)
       .expect(422)
       .end((err, res) => {
@@ -307,6 +309,76 @@ describe("PUT /api/me/update", () => {
         expect(res.body).toHaveProperty(
           "message",
           "Validation failed: username: Please enter your username"
+        );
+
+        done();
+      });
+  });
+});
+
+// For admin accounts
+describe("GET /api/admin/users", () => {
+  it("should get all users from database", (done) => {
+    request(app)
+      .get("/api/admin/users")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains users
+        expect(res.body).toHaveProperty("users");
+
+        done();
+      });
+  });
+});
+
+// Login with non admin account
+describe("POST /api/login", () => {
+  it("should login user and return a token", (done) => {
+    request(app)
+      .post("/api/login")
+      .send({
+        email: "igornikic001@gmail.com",
+        password: "sickPassword!",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains a token
+        expect(res.body).toHaveProperty("token");
+
+        // Store user token
+        userToken = res.body.token;
+
+        done();
+      });
+  });
+});
+
+describe("403 /api/admin/users", () => {
+  it("should return error if you are not on admin account", (done) => {
+    request(app)
+      .get("/api/admin/users")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(403)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 403 });
+        expect(res.body).toHaveProperty(
+          "message",
+          `Role (user) is not allowed to acccess this resource`
         );
 
         done();
