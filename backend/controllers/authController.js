@@ -314,3 +314,32 @@ export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+// @desc    Update user by ID (Admin only)
+// @route   PUT /api/admin/user/:id
+// @access  Private/Admin
+export const updateUser = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    username: req.body.username,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  // Update user by id
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});

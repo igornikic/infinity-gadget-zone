@@ -381,6 +381,55 @@ describe("GET /api/admin/user/:id", () => {
   });
 });
 
+describe("PUT /api/admin/user/:id", () => {
+  it("should update user details", (done) => {
+    request(app)
+      .put(`/api/admin/user/${id}`)
+      .send({
+        username: "TestAdmin",
+        email: "testg123789@gmail.com",
+        role: "admin",
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains user
+        expect(res.body).toHaveProperty("user");
+        expect(res.body.user).toHaveProperty("username", "TestAdmin");
+        expect(res.body.user).toHaveProperty("email", "testg123789@gmail.com");
+        expect(res.body.user).toHaveProperty("role", "admin");
+
+        done();
+      });
+  });
+
+  it("should return error if there is no user with this id", (done) => {
+    request(app)
+      .put(`/api/admin/user/64b510cc5c620d7bef933d5f`)
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "User not found with id: 64b510cc5c620d7bef933d5f"
+        );
+
+        done();
+      });
+  });
+});
+
 // Login with non admin account
 describe("POST /api/login", () => {
   it("should login user and return a token", (done) => {
@@ -432,6 +481,30 @@ describe("403 GET /api/admin/users", () => {
 });
 
 describe("403 GET /api/admin/user/:id", () => {
+  it("should return error if you are not on admin account", (done) => {
+    request(app)
+      .get(`/api/admin/user/${id}`)
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(403)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 403 });
+        expect(res.body).toHaveProperty(
+          "message",
+          `Role (user) is not allowed to acccess this resource`
+        );
+
+        done();
+      });
+  });
+});
+
+describe("403 PUT /api/admin/user/:id", () => {
   it("should return error if you are not on admin account", (done) => {
     request(app)
       .get(`/api/admin/user/${id}`)

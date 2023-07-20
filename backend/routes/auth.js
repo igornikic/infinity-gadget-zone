@@ -11,6 +11,7 @@ import {
   updateProfile,
   allUsers,
   getUserDetails,
+  updateUser,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -39,6 +40,7 @@ router
   .get(isAuthenticatedUser, authorizeRoles("admin"), allUsers);
 router
   .route("/admin/user/:id")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails);
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails)
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser);
 
 export default router;
