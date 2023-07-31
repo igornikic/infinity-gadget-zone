@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import express from "express";
 import fileUpload from "express-fileupload";
 
+import errorMiddleware from "./middlewares/errors.js";
+
 const app = express();
 
 // Load env variables with dotenv in DEVELOPMENT mode
@@ -21,9 +23,12 @@ app.use(express.urlencoded({ limit: "1mb", extended: true })); // for parsing ap
 app.use(cookieParser());
 
 // Importing all routes
+import auth from "./routes/auth.js";
 
 // Application-level middlewares
+app.use("/api", auth);
 
 // Middleware to handle errors
+app.use(errorMiddleware);
 
 export default app;

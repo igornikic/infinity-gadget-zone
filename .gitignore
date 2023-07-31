@@ -1,6 +1,10 @@
 # Backend Node.js dependencies
 /node_modules/
 
+# Backend mocks and coverages
+/backend/__mocks__/
+coverage/
+
 # Frontend Node.js dependencies
 /frontend/node_modules/
 
