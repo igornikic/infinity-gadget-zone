@@ -46,7 +46,7 @@ describe("POST /api/password/forgot", () => {
     request(app)
       .post("/api/password/forgot")
       .send({
-        email: "igornikic001@gmail.com",
+        email: process.env.USER_TEST_EMAIL,
       })
       .expect(200)
       .end((err, res) => {
@@ -90,7 +90,7 @@ describe("PUT /api/password/reset/:token", () => {
     request(app)
       .put(`/api/password/reset/${resetToken}`)
       .send({
-        email: "igornikic001@gmail.com",
+        email: process.env.USER_TEST_EMAIL,
         password: "sickPassword!",
         confirmPassword: "sickPassword!",
       })
@@ -143,7 +143,7 @@ describe("PUT /api/password/reset/:token", () => {
     request(app)
       .put(`/api/password/reset/${resetToken}`)
       .send({
-        email: "igornikic001@gmail.com",
+        email: process.env.USER_TEST_EMAIL,
         password: "sickPassword!",
         confirmPassword: "sickPassword123!",
       })

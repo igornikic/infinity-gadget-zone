@@ -33,7 +33,7 @@ beforeAll(async () => {
   connectDatabase();
   // Authorize as Test
   const res = await request(app).post("/api/login").send({
-    email: "testg123789@gmail.com",
+    email: process.env.ADMIN_TEST_EMAIL,
     password: "sickPassword!",
   });
   id = res.body.user._id;
@@ -282,7 +282,7 @@ describe("PUT /api/me/update", () => {
         username: "TestAdmin",
         firstName: "Test",
         lastName: "Admin",
-        email: "testg123789@gmail.com",
+        email: process.env.ADMIN_TEST_EMAIL,
         avatar: testAvatar2,
       })
       .set("Accept", "application/json")
@@ -297,7 +297,7 @@ describe("PUT /api/me/update", () => {
         expect(res.body.user).toHaveProperty("username", "TestAdmin");
         expect(res.body.user).toHaveProperty("firstName", "Test");
         expect(res.body.user).toHaveProperty("lastName", "Admin");
-        expect(res.body.user).toHaveProperty("email", "testg123789@gmail.com");
+        expect(res.body.user).toHaveProperty("email", process.env.ADMIN_TEST_EMAIL);
 
         done();
       });
@@ -310,7 +310,7 @@ describe("PUT /api/me/update", () => {
         username: "",
         firstName: "Test",
         lastName: "Admin",
-        email: "testg123789@gmail.com",
+        email: process.env.ADMIN_TEST_EMAIL,
         avatar: testAvatar2,
       })
       .set("Accept", "application/json")
@@ -401,7 +401,7 @@ describe("PUT /api/admin/user/:id", () => {
       .put(`/api/admin/user/${id}`)
       .send({
         username: "TestAdmin",
-        email: "testg123789@gmail.com",
+        email: process.env.ADMIN_TEST_EMAIL,
         role: "admin",
       })
       .set("Accept", "application/json")
@@ -414,7 +414,7 @@ describe("PUT /api/admin/user/:id", () => {
         // Assert that the response contains user
         expect(res.body).toHaveProperty("user");
         expect(res.body.user).toHaveProperty("username", "TestAdmin");
-        expect(res.body.user).toHaveProperty("email", "testg123789@gmail.com");
+        expect(res.body.user).toHaveProperty("email", process.env.ADMIN_TEST_EMAIL);
         expect(res.body.user).toHaveProperty("role", "admin");
 
         done();
@@ -491,7 +491,7 @@ describe("POST /api/login", () => {
     request(app)
       .post("/api/login")
       .send({
-        email: "igornikic001@gmail.com",
+        email: process.env.USER_TEST_EMAIL,
         password: "sickPassword!",
       })
       .set("Accept", "application/json")
