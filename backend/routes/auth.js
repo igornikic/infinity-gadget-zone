@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  googleLogin,
   registerUser,
   loginUser,
   forgotPassword,
@@ -12,7 +13,7 @@ import {
   allUsers,
   getUserDetails,
   updateUser,
-  deleteUser
+  deleteUser,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -20,6 +21,7 @@ const router = express.Router();
 import { isAuthenticatedUser, authorizeRoles } from "../middlewares/auth.js";
 
 // Authenticate user routes
+router.route("/google-login").post(googleLogin);
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 

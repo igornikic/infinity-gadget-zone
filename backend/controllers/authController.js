@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 
 import { v2 as cloudinary } from "cloudinary";
+import { OAuth2Client } from "google-auth-library";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
@@ -10,6 +11,51 @@ import sendUserToken from "../utils/userToken.js";
 
 // Setting up config file
 dotenv.config({ path: "backend/config/config.env" });
+
+const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID, null, {
+  cookie_policy: "single_host_origin",
+  cookie: {
+    secure: true,
+    sameSite: "none",
+  },
+});
+
+// @desc    Authenticate user via Google login
+// @route   POST /api/google-login
+// @access  Public
+export const googleLogin = catchAsyncErrors(async (req, res, next) => {
+  const { token } = req.body;
+
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_OAUTH_CLIENT_ID,
+  });
+
+  const { name, given_name, family_name, email, picture, jti } =
+    ticket.getPayload();
+
+  const existingUser = await User.findOne({ email });
+  // Check if a user with the same email already exists
+  if (existingUser) {
+    sendUserToken(existingUser, 200, res);
+  } else {
+    // User does not exist, create token with the Google login information
+    const user = {
+      jti,
+      username: name,
+      firstName: given_name,
+      lastName: family_name,
+      email,
+      avatar: {
+        url: picture,
+      },
+      role: "user",
+      // flag that will limit certain features on website (profile update, password change ...)
+      isGuest: true,
+    };
+    sendUserToken(user, 200, res);
+  }
+});
 
 // @desc    Register user
 // @route   POST /api/register
