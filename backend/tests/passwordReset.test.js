@@ -36,7 +36,7 @@ const setValidResetToken = async () => {
   const testUser = await User.findOne({ username: "TestUser" });
 
   testUser.resetPasswordToken = hashedTestResetToken;
-  testUser.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
+  testUser.resetPasswordExpire = Date.now() + 60 * 60 * 1000;
 
   await testUser.save();
 };

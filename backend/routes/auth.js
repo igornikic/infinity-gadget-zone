@@ -12,6 +12,7 @@ import {
   allUsers,
   getUserDetails,
   updateUser,
+  deleteUser
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -41,6 +42,7 @@ router
 router
   .route("/admin/user/:id")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails)
-  .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser);
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser)
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 
 export default router;

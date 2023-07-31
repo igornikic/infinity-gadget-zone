@@ -343,3 +343,27 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+// @desc    Delete user by ID (Admin only)
+// @route   DELETE /api/admin/user/:id
+// @access  Private/Admin
+export const deleteUser = catchAsyncErrors(async (req, res, next) => {
+  // Find user by id
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  // Remove avatar from cloudinary
+  const image_id = user.avatar.public_id;
+  await cloudinary.uploader.destroy(image_id);
+
+  await User.deleteOne({ _id: user._id });
+
+  res.status(200).json({
+    success: true,
+  });
+});
