@@ -56,7 +56,7 @@ describe("POST /api/password/forgot", () => {
         expect(res.body).toHaveProperty("success", true);
         expect(res.body).toHaveProperty(
           "message",
-          "Email sent to: igornikic001@gmail.com"
+          `Email sent to: ${process.env.USER_TEST_EMAIL}`
         );
         done();
       });
