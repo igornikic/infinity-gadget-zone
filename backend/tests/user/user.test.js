@@ -1,11 +1,11 @@
 import request from "supertest";
-import app from "../app.js";
+import app from "../../app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cloudinary from "cloudinary";
 
-import testAvatar2 from "../__mocks__/test-avatar2.js";
-import connectDatabase from "../config/database.js";
+import testAvatar2 from "../../__mocks__/test-avatar2.js";
+import connectDatabase from "../../config/database.js";
 
 // Setting up config file
 dotenv.config({ path: "backend/config/config.env" });
@@ -297,7 +297,10 @@ describe("PUT /api/me/update", () => {
         expect(res.body.user).toHaveProperty("username", "TestAdmin");
         expect(res.body.user).toHaveProperty("firstName", "Test");
         expect(res.body.user).toHaveProperty("lastName", "Admin");
-        expect(res.body.user).toHaveProperty("email", process.env.ADMIN_TEST_EMAIL);
+        expect(res.body.user).toHaveProperty(
+          "email",
+          process.env.ADMIN_TEST_EMAIL
+        );
 
         done();
       });
@@ -414,7 +417,10 @@ describe("PUT /api/admin/user/:id", () => {
         // Assert that the response contains user
         expect(res.body).toHaveProperty("user");
         expect(res.body.user).toHaveProperty("username", "TestAdmin");
-        expect(res.body.user).toHaveProperty("email", process.env.ADMIN_TEST_EMAIL);
+        expect(res.body.user).toHaveProperty(
+          "email",
+          process.env.ADMIN_TEST_EMAIL
+        );
         expect(res.body.user).toHaveProperty("role", "admin");
 
         done();
