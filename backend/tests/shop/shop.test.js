@@ -266,6 +266,32 @@ describe("POST /api/shop/new", () => {
   });
 });
 
+describe("400 /api/shop/login", () => {
+  it("should return an error if shop account is not activated", (done) => {
+    request(app)
+      .post("/api/shop/login")
+      .send({
+        shopEmail: process.env.SELLER_TEST_EMAIL,
+        password: "reallygood!",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Please activate your shop by clicking the link in the email we sent you"
+        );
+        done();
+      });
+  });
+});
+
 describe("PUT /api/shop/activate/:token", () => {
   it("should activate shop account", (done) => {
     setValidActivationToken();
@@ -309,6 +335,105 @@ describe("PUT /api/shop/activate/:token", () => {
           "message",
           "Activation token is invalid or has expired"
         );
+        done();
+      });
+  });
+});
+
+describe("POST /api/shop/login", () => {
+  it("should login with shop account and return a token", (done) => {
+    request(app)
+      .post("/api/shop/login")
+      .send({
+        shopEmail: process.env.SELLER_TEST_EMAIL,
+        password: "reallygood!",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains a token
+        expect(res.body).toHaveProperty("token");
+
+        // Assert that the response contains shop
+        expect(res.body).toHaveProperty("shop");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop");
+
+        // Assert that the response contains the options for the "shop_token" cookie
+        expect(res.body).toHaveProperty("options");
+        expect(res.body.options).toHaveProperty("expires");
+        expect(res.body.options).toHaveProperty("httpOnly", true);
+        expect(res.body.options).toHaveProperty("sameSite", "none");
+        expect(res.body.options).toHaveProperty("path", "/");
+
+        done();
+      });
+  });
+
+  it("should return an error if email or password is empty", (done) => {
+    request(app)
+      .post("/api/shop/login")
+      .send({
+        shopEmail: "",
+        password: "reallygood!",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Please enter email and password"
+        );
+        done();
+      });
+  });
+
+  it("should return an error if password is incorrect", (done) => {
+    request(app)
+      .post("/api/shop/login")
+      .send({
+        shopEmail: process.env.SELLER_TEST_EMAIL,
+        password: "password456",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 401 });
+        expect(res.body).toHaveProperty("message", "Invalid Email or Password");
+        done();
+      });
+  });
+
+  it("should return an error if email is invalid", (done) => {
+    request(app)
+      .post("/api/shop/login")
+      .send({
+        shopEmail: "testUser.com",
+        password: "reallygood!",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 401 });
+        expect(res.body).toHaveProperty("message", "Invalid Email or Password");
         done();
       });
   });

@@ -3,6 +3,7 @@ import express from "express";
 import {
   newShop,
   activateShop,
+  loginShop,
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
 
@@ -12,6 +13,7 @@ import { isAuthenticatedUser, authorizeRoles } from "../middlewares/auth.js";
 
 // Public routes
 router.route("/shop/new").post(newShop);
+router.route("/shop/login").post(loginShop);
 router.route("/shop/activate/:token").put(activateShop);
 
 // Private routes

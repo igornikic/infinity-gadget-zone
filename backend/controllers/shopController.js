@@ -136,7 +136,47 @@ export const activateShop = catchAsyncErrors(async (req, res, next) => {
   sendShopToken(shop, 200, res);
 });
 
-// @desc    Delete unactivated shop accounts
+// @desc    Login shop
+// @route   POST /api/shop/login
+// @access  Public
+export const loginShop = catchAsyncErrors(async (req, res, next) => {
+  const { shopEmail, password } = req.body;
+
+  // Check if shopEmail and password is entered by user
+  if (!shopEmail || !password) {
+    return next(new ErrorHandler("Please enter email and password", 400));
+  }
+
+  // Find shop in database
+  const shop = await Shop.findOne({ shopEmail }).select("+password");
+
+  if (!shop) {
+    return next(new ErrorHandler("Invalid Email or Password", 401));
+  }
+
+  // Check if password is correct or not
+  const isPasswordMatched = await shop.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid Email or Password", 401));
+  }
+
+  // Check if shop exists and is not activated
+  if (shop && !shop.isActive) {
+    return next(
+      new ErrorHandler(
+        "Please activate your shop by clicking the link in the email we sent you",
+        400
+      )
+    );
+  }
+
+  sendShopToken(shop, 200, res);
+});
+
+// Admin Routes
+
+// @desc    Delete unactivated shop accounts (Admin only)
 // @route   DELETE /api/shops
 // @access  Private/Admin
 export const deleteUnactivatedShops = catchAsyncErrors(
