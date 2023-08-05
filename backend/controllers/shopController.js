@@ -174,6 +174,22 @@ export const loginShop = catchAsyncErrors(async (req, res, next) => {
   sendShopToken(shop, 200, res);
 });
 
+// @desc    Logout shop
+// @route   GET /api/shop/logout
+// @access  Public
+export const logoutShop = catchAsyncErrors(async (req, res, next) => {
+  // Set the token cookie to null and set the expires date to the current time
+  res.cookie("shop_token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out",
+  });
+});
+
 // Admin Routes
 
 // @desc    Delete unactivated shop accounts (Admin only)

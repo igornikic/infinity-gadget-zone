@@ -439,6 +439,21 @@ describe("POST /api/shop/login", () => {
   });
 });
 
+describe("GET /api/shop/logout", () => {
+  it("should logout from shop account and set token to null", (done) => {
+    request(app)
+      .get("/api/shop/logout")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty("message", "Logged out");
+        done();
+      });
+  });
+});
+
 // For admin accounts
 describe("DELETE /api/admin/shops", () => {
   it("should delete all unactivated shop accounts from database", (done) => {

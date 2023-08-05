@@ -5,6 +5,7 @@ import {
   activateShop,
   loginShop,
   deleteUnactivatedShops,
+  logoutShop,
 } from "../controllers/shopController.js";
 
 const router = express.Router();
@@ -15,6 +16,9 @@ import { isAuthenticatedUser, authorizeRoles } from "../middlewares/auth.js";
 router.route("/shop/new").post(newShop);
 router.route("/shop/login").post(loginShop);
 router.route("/shop/activate/:token").put(activateShop);
+
+// Unauthenticate user route
+router.route("/shop/logout").get(logoutShop);
 
 // Private routes
 
