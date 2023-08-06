@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cloudinary from "cloudinary";
 
 import connectDatabase from "../../config/database.js";
+import testLogo from "../../__mocks__/test-logo.js";
 
 // Setting up config file
 dotenv.config({ path: "backend/config/config.env" });
@@ -18,6 +19,8 @@ cloudinary.config({
 
 // Variable to store seller token for seller account
 let sellerToken;
+// Variable to store logo url retrieved from cloudinary
+let logoUrl;
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -30,6 +33,7 @@ beforeAll(async () => {
   });
 
   sellerToken = res.body.token;
+  logoUrl = res.body.shop.logo.url;
 });
 
 // Disconnects from MongoDB database
@@ -71,6 +75,101 @@ describe("GET /api/shop/me", () => {
           "message",
           "Login first to access this resource"
         );
+        done();
+      });
+  });
+});
+
+describe("PUT /api/shop/me/update", () => {
+  it("should update shop data without uploading logo because it haven't changed", (done) => {
+    request(app)
+      .put("/api/shop/me/update")
+      .send({
+        shopName: "Test Shop3",
+        shopEmail: "testShop3@gmail.com",
+        phoneNumber: 123456788,
+        address: "1234 Avenija 67",
+        zipCode: 3222,
+        logo: logoUrl,
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains shop
+        expect(res.body).toHaveProperty("shop");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop3");
+        expect(res.body.shop).toHaveProperty(
+          "shopEmail",
+          "testShop3@gmail.com"
+        );
+        expect(res.body.shop).toHaveProperty("phoneNumber", 123456788);
+        expect(res.body.shop).toHaveProperty("address", "1234 Avenija 67");
+        expect(res.body.shop).toHaveProperty("zipCode", 3222);
+
+        done();
+      });
+  });
+
+  it("should update shop data and upload new logo", (done) => {
+    request(app)
+      .put("/api/shop/me/update")
+      .send({
+        shopName: "Test Shop2",
+        shopEmail: "testShop@gmail.com",
+        phoneNumber: 123456789,
+        address: "123 Avenija 67",
+        zipCode: 3456,
+        logo: testLogo,
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains shop
+        expect(res.body).toHaveProperty("shop");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop2");
+        expect(res.body.shop).toHaveProperty("shopEmail", "testShop@gmail.com");
+        expect(res.body.shop).toHaveProperty("phoneNumber", 123456789);
+        expect(res.body.shop).toHaveProperty("address", "123 Avenija 67");
+        expect(res.body.shop).toHaveProperty("zipCode", 3456);
+
+        done();
+      });
+  });
+
+  it("should return error if data is invalid", (done) => {
+    request(app)
+      .put("/api/shop/me/update")
+      .send({
+        shopName: "",
+        shopEmail: "testShop@gmail.com",
+        phoneNumber: 123456789,
+        address: "123 Avenija 67",
+        zipCode: 3456,
+        logo: testLogo,
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(422)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 422 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Validation failed: shopName: Please enter shop name"
+        );
+
         done();
       });
   });

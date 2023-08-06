@@ -6,6 +6,7 @@ import {
   loginShop,
   logoutShop,
   getSellerShop,
+  updateShop,
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
 
@@ -27,6 +28,7 @@ router.route("/shop/logout").get(logoutShop);
 
 // Private routes
 router.route("/shop/me").get(isAuthenticatedSeller, getSellerShop);
+router.route("/shop/me/update").put(isAuthenticatedSeller, updateShop);
 
 // Admin routes
 router

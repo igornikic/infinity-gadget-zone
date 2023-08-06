@@ -202,6 +202,55 @@ export const getSellerShop = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc    Update shop
+// @route   PUT /api/shop/me/update
+// @access  Private
+export const updateShop = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.shop.id);
+
+  const newShopData = {
+    shopName: req.body.shopName,
+    shopEmail: req.body.shopEmail,
+    phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
+    zipCode: req.body.zipCode,
+  };
+
+  // Update shop by id
+  const updatedShop = await Shop.findByIdAndUpdate(req.shop.id, newShopData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  // Check if logo has changed
+  if (req.body.logo !== shop.logo.url) {
+    // Find and delete existing logo from cloudinary
+    const image_id = shop.logo.public_id;
+    await cloudinary.uploader.destroy(image_id);
+
+    // Upload new logo to cloudinary
+    const result = await cloudinary.uploader.upload(req.body.logo, {
+      folder: "IGZlogos",
+      width: 150,
+      crop: "scale",
+    });
+
+    updatedShop.logo = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+
+    // Save updated shop with new logo
+    await updatedShop.save();
+  }
+
+  res.status(200).json({
+    success: true,
+    shop: updatedShop,
+  });
+});
+
 // Admin Routes
 
 // @desc    Delete unactivated shop accounts (Admin only)
