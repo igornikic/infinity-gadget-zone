@@ -190,6 +190,18 @@ export const logoutShop = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc    Get seller shop
+// @route   GET /api/shop/me
+// @access  Private
+export const getSellerShop = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.shop.id);
+
+  res.status(200).json({
+    success: true,
+    shop,
+  });
+});
+
 // Admin Routes
 
 // @desc    Delete unactivated shop accounts (Admin only)
