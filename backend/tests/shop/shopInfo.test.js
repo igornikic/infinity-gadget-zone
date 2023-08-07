@@ -21,6 +21,8 @@ cloudinary.config({
 let sellerToken;
 // Variable to store logo url retrieved from cloudinary
 let logoUrl;
+// Variable to store id
+let id;
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -31,7 +33,7 @@ beforeAll(async () => {
     shopEmail: "testShop@gmail.com",
     password: "123456789",
   });
-
+  id = res.body.shop._id;
   sellerToken = res.body.token;
   logoUrl = res.body.shop.logo.url;
 });
@@ -168,6 +170,67 @@ describe("PUT /api/shop/me/update", () => {
         expect(res.body).toHaveProperty(
           "message",
           "Validation failed: shopName: Please enter shop name"
+        );
+
+        done();
+      });
+  });
+});
+
+describe("GET /api/shop/info/:id", () => {
+  it("should get shop by id", (done) => {
+    request(app)
+      .get(`/api/shop/info/${id}`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains shop
+        expect(res.body).toHaveProperty("shop");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop2");
+
+        done();
+      });
+  });
+
+  it("should return error if there is no shop with this id", (done) => {
+    request(app)
+      .get(`/api/shop/info/64b510cc5c620d7bef933d5f`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Shop not found with id: 64b510cc5c620d7bef933d5f"
+        );
+
+        done();
+      });
+  });
+
+  it("should return error if id is invalid", (done) => {
+    request(app)
+      .get(`/api/shop/info/64b510`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Resource not found. Invalid: _id"
         );
 
         done();

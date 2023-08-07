@@ -174,6 +174,24 @@ export const loginShop = catchAsyncErrors(async (req, res, next) => {
   sendShopToken(shop, 200, res);
 });
 
+// @desc    Get Shop Info by ID
+// @route   GET /api/shop/:id
+// @access  Public
+export const getShopInfo = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.params.id);
+
+  if (!shop) {
+    return next(
+      new ErrorHandler(`Shop not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    shop,
+  });
+});
+
 // @desc    Logout shop
 // @route   GET /api/shop/logout
 // @access  Public

@@ -6,6 +6,7 @@ import {
   loginShop,
   logoutShop,
   getSellerShop,
+  getShopInfo,
   updateShop,
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
@@ -22,6 +23,7 @@ import {
 router.route("/shop/new").post(newShop);
 router.route("/shop/login").post(loginShop);
 router.route("/shop/activate/:token").put(activateShop);
+router.route("/shop/info/:id").get(getShopInfo);
 
 // Unauthenticate seller route
 router.route("/shop/logout").get(logoutShop);
