@@ -290,6 +290,13 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     email: req.body.email,
   };
 
+  // Update user by id
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
   // Check if avatar has changed
   if (req.body.avatar !== user.avatar.url) {
     // Find and delete existing avatar in cloudinary
@@ -303,24 +310,14 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
       crop: "scale",
     });
 
-    newUserData.avatar = {
+    updatedUser.avatar = {
       public_id: result.public_id,
       url: result.secure_url,
     };
-  } else {
-    // Use existing avatar
-    newUserData.avatar = {
-      public_id: user.avatar.public_id,
-      url: user.avatar.url,
-    };
-  }
 
-  // Update user by id
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, newUserData, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  });
+    // Save updated user with new logo
+    await updatedUser.save();
+  }
 
   res.status(200).json({
     success: true,
