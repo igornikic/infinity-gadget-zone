@@ -30,7 +30,7 @@ beforeAll(async () => {
 
   // Authorize as Test seller
   const res = await request(app).post("/api/shop/login").send({
-    shopEmail: "testShop@gmail.com",
+    shopEmail: "testShop4@gmail.com",
     password: "123456789",
   });
   id = res.body.shop._id;
@@ -56,7 +56,7 @@ describe("GET /api/shop/me", () => {
 
         // Assert that the response contains shop
         expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop2");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop4");
 
         done();
       });
@@ -87,8 +87,8 @@ describe("PUT /api/shop/me/update", () => {
     request(app)
       .put("/api/shop/me/update")
       .send({
-        shopName: "Test Shop3",
-        shopEmail: "testShop3@gmail.com",
+        shopName: "Test Shop5",
+        shopEmail: "testShop5@gmail.com",
         phoneNumber: 123456788,
         address: "1234 Avenija 67",
         zipCode: 3222,
@@ -103,10 +103,10 @@ describe("PUT /api/shop/me/update", () => {
 
         // Assert that the response contains shop
         expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop3");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop5");
         expect(res.body.shop).toHaveProperty(
           "shopEmail",
-          "testShop3@gmail.com"
+          "testShop5@gmail.com"
         );
         expect(res.body.shop).toHaveProperty("phoneNumber", 123456788);
         expect(res.body.shop).toHaveProperty("address", "1234 Avenija 67");
@@ -120,8 +120,8 @@ describe("PUT /api/shop/me/update", () => {
     request(app)
       .put("/api/shop/me/update")
       .send({
-        shopName: "Test Shop2",
-        shopEmail: "testShop@gmail.com",
+        shopName: "Test Shop4",
+        shopEmail: "testShop4@gmail.com",
         phoneNumber: 123456789,
         address: "123 Avenija 67",
         zipCode: 3456,
@@ -136,8 +136,11 @@ describe("PUT /api/shop/me/update", () => {
 
         // Assert that the response contains shop
         expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop2");
-        expect(res.body.shop).toHaveProperty("shopEmail", "testShop@gmail.com");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop4");
+        expect(res.body.shop).toHaveProperty(
+          "shopEmail",
+          "testShop4@gmail.com"
+        );
         expect(res.body.shop).toHaveProperty("phoneNumber", 123456789);
         expect(res.body.shop).toHaveProperty("address", "123 Avenija 67");
         expect(res.body.shop).toHaveProperty("zipCode", 3456);
@@ -189,7 +192,7 @@ describe("GET /api/shop/info/:id", () => {
 
         // Assert that the response contains shop
         expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop2");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop4");
 
         done();
       });
