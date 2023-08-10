@@ -271,6 +271,19 @@ export const updateShop = catchAsyncErrors(async (req, res, next) => {
 
 // Admin Routes
 
+// @desc    All Shops (Admin only)
+// @route   GET /api/shops
+// @access  Private/Admin
+export const allShops = catchAsyncErrors(async (req, res, next) => {
+  const shops = await Shop.find();
+
+  res.status(200).json({
+    success: true,
+    count: shops.length,
+    shops,
+  });
+});
+
 // @desc    Delete unactivated shop accounts (Admin only)
 // @route   DELETE /api/shops
 // @access  Private/Admin

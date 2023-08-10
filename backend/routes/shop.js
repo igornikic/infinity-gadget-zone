@@ -8,6 +8,7 @@ import {
   getSellerShop,
   getShopInfo,
   updateShop,
+  allShops,
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
 
@@ -35,6 +36,7 @@ router.route("/shop/me/update").put(isAuthenticatedSeller, updateShop);
 // Admin routes
 router
   .route("/admin/shops")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), allShops)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUnactivatedShops);
 
 export default router;
