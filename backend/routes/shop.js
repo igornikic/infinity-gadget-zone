@@ -9,6 +9,7 @@ import {
   getShopInfo,
   updateShop,
   allShops,
+  deleteShop,
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
 
@@ -38,5 +39,8 @@ router
   .route("/admin/shops")
   .get(isAuthenticatedUser, authorizeRoles("admin"), allShops)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUnactivatedShops);
+router
+  .route("/admin/shop/:id")
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteShop);
 
 export default router;

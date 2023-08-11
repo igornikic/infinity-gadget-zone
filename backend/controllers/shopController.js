@@ -271,7 +271,7 @@ export const updateShop = catchAsyncErrors(async (req, res, next) => {
 
 // Admin Routes
 
-// @desc    All Shops (Admin only)
+// @desc    All shops (Admin only)
 // @route   GET /api/shops
 // @access  Private/Admin
 export const allShops = catchAsyncErrors(async (req, res, next) => {
@@ -281,6 +281,30 @@ export const allShops = catchAsyncErrors(async (req, res, next) => {
     success: true,
     count: shops.length,
     shops,
+  });
+});
+
+// @desc    Delete shop by ID (Admin only)
+// @route   DELETE /api/admin/shop/:id
+// @access  Private/Admin
+export const deleteShop = catchAsyncErrors(async (req, res, next) => {
+  // Find shop by id
+  const shop = await Shop.findById(req.params.id);
+
+  if (!shop) {
+    return next(
+      new ErrorHandler(`Shop not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  // Remove logo from cloudinary
+  const image_id = shop.logo.public_id;
+  await cloudinary.uploader.destroy(image_id);
+
+  await Shop.deleteOne({ _id: shop._id });
+
+  res.status(200).json({
+    success: true,
   });
 });
 
