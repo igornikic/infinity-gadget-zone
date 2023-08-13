@@ -1,13 +1,13 @@
-import User from "../models/userModel.js";
+import User from "../../models/userModel.js";
 
 import request from "supertest";
-import app from "../app.js";
+import app from "../../app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cloudinary from "cloudinary";
 
-import connectDatabase from "../config/database.js";
-import testAvatar from "../__mocks__/test-avatar.js";
+import connectDatabase from "../../config/database.js";
+import testAvatar from "../../__mocks__/test-avatar.js";
 
 // Setting up config file
 dotenv.config({ path: "backend/config/config.env" });

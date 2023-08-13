@@ -1,32 +1,50 @@
 import User from "../models/userModel.js";
+import Shop from "../models/shopModel.js";
 
 import jwt from "jsonwebtoken";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "./catchAsyncErrors.js";
 
-// Checks if user is authenticated or not
-export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  // Get the token from the cookies sent with the request
-  const { user_token } = req.cookies;
+const authenticate = (tokenName, secretKey, Model) =>
+  catchAsyncErrors(async (req, res, next) => {
+    // Get token from cookies
+    const token = req.cookies[tokenName];
 
-  if (!user_token) {
-    return next(new ErrorHandler("Login first to access this resource", 401));
-  }
+    if (!token) {
+      return next(new ErrorHandler(`Login first to access this resource`, 401));
+    }
 
-  // Verify the token using the secret key and set req.user to the user with the id decoded from the token
-  const decoded = jwt.verify(user_token, process.env.USER_JWT_SECRET);
-  req.user = await User.findById(decoded.id);
+    // Verify token and set appropriate property on req
+    const decoded = jwt.verify(token, secretKey);
+    req[tokenName.replace("_token", "")] = await Model.findById(decoded.id);
 
-  next();
-});
+    next();
+  });
 
-// Handling users roles
+// Middleware to authenticate user
+export const isAuthenticatedUser = authenticate(
+  "user_token",
+  process.env.USER_JWT_SECRET,
+  User
+);
+
+// Middleware to authenticate seller
+export const isAuthenticatedSeller = authenticate(
+  "shop_token",
+  process.env.SHOP_JWT_SECRET,
+  Shop
+);
+
+// Helper function to get role from req
+const getRole = (req) => req.user?.role || req.shop?.role;
+
+// Handling roles
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(getRole(req))) {
       return next(
         new ErrorHandler(
-          `Role (${req.user.role}) is not allowed to acccess this resource`,
+          `Role (${getRole(req)}) is not allowed to acccess this resource`,
           403
         )
       );

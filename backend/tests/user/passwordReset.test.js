@@ -1,12 +1,12 @@
-import User from "../models/userModel.js";
+import User from "../../models/userModel.js";
 
 import request from "supertest";
-import app from "../app.js";
+import app from "../../app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import crypto from "crypto";
 
-import connectDatabase from "../config/database.js";
+import connectDatabase from "../../config/database.js";
 
 // Setting up config file
 dotenv.config({ path: "backend/config/config.env" });
