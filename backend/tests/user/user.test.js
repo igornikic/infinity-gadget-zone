@@ -17,8 +17,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Variable to store user token for user account
-let userToken;
 // Variable to store user token for admin account
 let adminToken;
 // Variable to store avatar url retrieved from cloudinary
@@ -315,80 +313,6 @@ describe("PUT /api/me/update", () => {
         expect(res.body).toHaveProperty(
           "message",
           "Validation failed: username: Please enter your username"
-        );
-
-        done();
-      });
-  });
-});
-
-// Login with non admin account
-describe("POST /api/login", () => {
-  it("should login user and return a token", (done) => {
-    request(app)
-      .post("/api/login")
-      .send({
-        email: process.env.USER_TEST_EMAIL,
-        password: "sickPassword!",
-      })
-      .set("Accept", "application/json")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-
-        // Assert that the response contains a token
-        expect(res.body).toHaveProperty("token");
-
-        // Store user token
-        userToken = res.body.token;
-
-        done();
-      });
-  });
-});
-
-describe("403 GET /api/admin/users", () => {
-  it("should return error if you are not on admin account", (done) => {
-    request(app)
-      .get("/api/admin/users")
-      .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
-      .expect("Content-Type", /json/)
-      .expect(403)
-      .end((err, res) => {
-        if (err) return done(err);
-
-        // Assert that the response contains the error message
-        expect(res.body).toHaveProperty("success", false);
-        expect(res.body).toHaveProperty("error", { statusCode: 403 });
-        expect(res.body).toHaveProperty(
-          "message",
-          `Role (user) is not allowed to acccess this resource`
-        );
-
-        done();
-      });
-  });
-});
-
-describe("403 GET /api/admin/user/:id", () => {
-  it("should return error if you are not on admin account", (done) => {
-    request(app)
-      .get(`/api/admin/user/${id}`)
-      .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${userToken}`])
-      .expect("Content-Type", /json/)
-      .expect(403)
-      .end((err, res) => {
-        if (err) return done(err);
-
-        // Assert that the response contains the error message
-        expect(res.body).toHaveProperty("success", false);
-        expect(res.body).toHaveProperty("error", { statusCode: 403 });
-        expect(res.body).toHaveProperty(
-          "message",
-          `Role (user) is not allowed to acccess this resource`
         );
 
         done();

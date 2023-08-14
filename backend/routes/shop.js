@@ -13,6 +13,11 @@ import {
   deleteUnactivatedShops,
 } from "../controllers/shopController.js";
 
+import {
+  forgotPasswordShop,
+  resetPasswordShop,
+} from "../controllers/passwordResetController.js";
+
 const router = express.Router();
 
 import {
@@ -26,6 +31,10 @@ router.route("/shop/new").post(newShop);
 router.route("/shop/login").post(loginShop);
 router.route("/shop/activate/:token").put(activateShop);
 router.route("/shop/info/:id").get(getShopInfo);
+
+// Reset password routes
+router.route("/shop/password/forgot").post(forgotPasswordShop);
+router.route("/shop/password/reset/:token").put(resetPasswordShop);
 
 // Unauthenticate seller route
 router.route("/shop/logout").get(logoutShop);

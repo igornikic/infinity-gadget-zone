@@ -41,7 +41,7 @@ beforeAll(async () => {
 // Disconnects from MongoDB database
 afterAll(async () => {
   // Delete test shops from database after all tests
-  const shopNames = ["Test Shop"];
+  const shopNames = ["Test Shop1"];
   await Shop.deleteMany({ shopName: { $in: shopNames } });
 
   // Delete all logoss from cloudinary after all tests
@@ -64,10 +64,12 @@ const setValidActivationToken = async () => {
     .digest("hex");
 
   // Store hashed test activation token and valid expiration time in database for TestSeller shop
-  const testShop = await Shop.findOne({ shopName: "Test Shop" });
+  const testShop = await Shop.findOne({ shopName: "Test Shop1" });
+
+  const expirationTime = Date.now() + 60 * 60 * 1000;
 
   testShop.shopActivationToken = hashedTestActivationToken;
-  testShop.shopActivationExpire = Date.now() + 60 * 60 * 1000;
+  testShop.shopActivationExpire = expirationTime;
 
   await testShop.save();
 };
@@ -87,8 +89,8 @@ describe("POST /api/shop/new", () => {
     request(app)
       .post("/api/shop/new")
       .send({
-        shopName: "Test Shop",
-        shopEmail: process.env.SELLER_TEST_EMAIL,
+        shopName: "Test Shop1",
+        shopEmail: "testShop1@gmail.com",
         password: "reallygood!",
         confirmPassword: "reallygood!",
         phoneNumber: "123456789",
@@ -106,7 +108,7 @@ describe("POST /api/shop/new", () => {
         expect(res.body).toHaveProperty("success", true);
         expect(res.body).toHaveProperty(
           "message",
-          `Email sent to: ${process.env.SELLER_TEST_EMAIL}`
+          `Email sent to: testShop1@gmail.com`
         );
 
         done();
@@ -118,7 +120,7 @@ describe("POST /api/shop/new", () => {
       .post("/api/shop/new")
       .send({
         shopName: "Test Shop2",
-        shopEmail: "testShop@gmail.com",
+        shopEmail: "testShop2@gmail.com",
         password: "reallygood!",
         confirmPassword: "reallygood!",
         phoneNumber: "123456789",
@@ -138,7 +140,7 @@ describe("POST /api/shop/new", () => {
         expect(res.body).toHaveProperty("success", true);
         expect(res.body).toHaveProperty(
           "message",
-          `Email sent to: testShop@gmail.com`
+          `Email sent to: testShop2@gmail.com`
         );
 
         done();
@@ -149,8 +151,8 @@ describe("POST /api/shop/new", () => {
     request(app)
       .post("/api/shop/new")
       .send({
-        shopName: "Test Shop",
-        shopEmail: process.env.SELLER_TEST_EMAIL,
+        shopName: "Test Shop5",
+        shopEmail: "testShop5@gmail.com",
         password: "reallygood!",
         confirmPassword: "reallygood!123", // Different password for confirmation
         phoneNumber: "123456789",
@@ -176,7 +178,7 @@ describe("POST /api/shop/new", () => {
     request(app)
       .post("/api/shop/new")
       .send({
-        shopName: "Test Shop",
+        shopName: "Test Shop4",
         shopEmail: process.env.SELLER_TEST_EMAIL,
         password: "reallygood!",
         confirmPassword: "reallygood!",
@@ -271,7 +273,7 @@ describe("400 /api/shop/login", () => {
     request(app)
       .post("/api/shop/login")
       .send({
-        shopEmail: process.env.SELLER_TEST_EMAIL,
+        shopEmail: "testShop2@gmail.com",
         password: "reallygood!",
       })
       .set("Accept", "application/json")
@@ -293,32 +295,32 @@ describe("400 /api/shop/login", () => {
 });
 
 describe("PUT /api/shop/activate/:token", () => {
-  it("should activate shop account", (done) => {
-    setValidActivationToken();
-    request(app)
-      .put(`/api/shop/activate/${activationToken}`)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
+  it("should activate shop account", async () => {
+    try {
+      await setValidActivationToken();
+      const res = await request(app)
+        .put(`/api/shop/activate/${activationToken}`)
+        .expect(200);
 
-        const publicId = res.body.shop.logo.public_id;
-        uploadedLogoPublicIds.push(publicId);
+      const publicId = res.body.shop.logo.public_id;
+      uploadedLogoPublicIds.push(publicId);
 
-        // Assert that the response contains a token
-        expect(res.body).toHaveProperty("token");
+      // Assert that the response contains a token
+      expect(res.body).toHaveProperty("token");
 
-        // Assert that the response contains shop
-        expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop");
+      // Assert that the response contains shop
+      expect(res.body).toHaveProperty("shop");
+      expect(res.body.shop).toHaveProperty("shopName", "Test Shop1");
 
-        // Assert that the response contains the options for the "shop_token" cookie
-        expect(res.body).toHaveProperty("options");
-        expect(res.body.options).toHaveProperty("expires");
-        expect(res.body.options).toHaveProperty("httpOnly", true);
-        expect(res.body.options).toHaveProperty("sameSite", "none");
-        expect(res.body.options).toHaveProperty("path", "/");
-        done();
-      });
+      // Assert that the response contains the options for the "shop_token" cookie
+      expect(res.body).toHaveProperty("options");
+      expect(res.body.options).toHaveProperty("expires");
+      expect(res.body.options).toHaveProperty("httpOnly", true);
+      expect(res.body.options).toHaveProperty("sameSite", "none");
+      expect(res.body.options).toHaveProperty("path", "/");
+    } catch (error) {
+      throw error;
+    }
   });
 
   it("should return an error if activation token is invalid or expired", (done) => {
@@ -359,7 +361,7 @@ describe("POST /api/shop/login", () => {
 
         // Assert that the response contains shop
         expect(res.body).toHaveProperty("shop");
-        expect(res.body.shop).toHaveProperty("shopName", "Test Shop");
+        expect(res.body.shop).toHaveProperty("shopName", "Test Shop4");
 
         // Assert that the response contains the options for the "shop_token" cookie
         expect(res.body).toHaveProperty("options");
