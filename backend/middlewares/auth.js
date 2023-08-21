@@ -35,16 +35,13 @@ export const isAuthenticatedSeller = authenticate(
   Shop
 );
 
-// Helper function to get role from req
-const getRole = (req) => req.user?.role || req.shop?.role;
-
 // Handling roles
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(getRole(req))) {
+    if (!roles.includes(req.user.role)) {
       return next(
         new ErrorHandler(
-          `Role (${getRole(req)}) is not allowed to acccess this resource`,
+          `Role (${req.user.role}) is not allowed to acccess this resource`,
           403
         )
       );

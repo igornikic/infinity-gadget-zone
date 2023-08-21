@@ -4,8 +4,6 @@ import {
   googleLogin,
   registerUser,
   loginUser,
-  forgotPassword,
-  resetPassword,
   logout,
   getUserProfile,
   updatePassword,
@@ -15,6 +13,11 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/authController.js";
+
+import {
+  forgotPasswordUser,
+  resetPasswordUser,
+} from "../controllers/passwordResetController.js";
 
 const router = express.Router();
 
@@ -26,8 +29,8 @@ router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 
 // Reset password routes
-router.route("/password/forgot").post(forgotPassword);
-router.route("/password/reset/:token").put(resetPassword);
+router.route("/password/forgot").post(forgotPasswordUser);
+router.route("/password/reset/:token").put(resetPasswordUser);
 
 // Unauthenticate user route
 router.route("/logout").get(logout);
