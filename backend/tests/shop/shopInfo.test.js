@@ -30,8 +30,8 @@ beforeAll(async () => {
 
   // Authorize as Test seller
   const res = await request(app).post("/api/shop/login").send({
-    shopEmail: "testShop4@gmail.com",
-    password: "123456789",
+    shopEmail: process.env.SELLER_TEST_EMAIL,
+    password: "reallygood!",
   });
   id = res.body.shop._id;
   sellerToken = res.body.token;
@@ -121,7 +121,7 @@ describe("PUT /api/shop/me/update", () => {
       .put("/api/shop/me/update")
       .send({
         shopName: "Test Shop4",
-        shopEmail: "testShop4@gmail.com",
+        shopEmail: process.env.SELLER_TEST_EMAIL,
         phoneNumber: 123456789,
         address: "123 Avenija 67",
         zipCode: 3456,
@@ -139,7 +139,7 @@ describe("PUT /api/shop/me/update", () => {
         expect(res.body.shop).toHaveProperty("shopName", "Test Shop4");
         expect(res.body.shop).toHaveProperty(
           "shopEmail",
-          "testShop4@gmail.com"
+          process.env.SELLER_TEST_EMAIL
         );
         expect(res.body.shop).toHaveProperty("phoneNumber", 123456789);
         expect(res.body.shop).toHaveProperty("address", "123 Avenija 67");

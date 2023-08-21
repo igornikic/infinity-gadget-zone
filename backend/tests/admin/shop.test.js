@@ -21,7 +21,6 @@ cloudinary.config({
 
 // Variable to store user token for admin account
 let adminToken;
-
 // Variable to store shop id
 let shopId;
 
