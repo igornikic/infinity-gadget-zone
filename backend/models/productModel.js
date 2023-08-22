@@ -107,11 +107,6 @@ const productSchema = new mongoose.Schema({
       ref: "Coupon",
     },
   ],
-  seller: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: true,
-  },
   sold: {
     type: Number,
     default: 0,

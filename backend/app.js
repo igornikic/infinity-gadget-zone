@@ -25,10 +25,12 @@ app.use(cookieParser());
 // Importing all routes
 import auth from "./routes/auth.js";
 import shop from "./routes/shop.js";
+import product from "./routes/product.js";
 
 // Application-level middlewares
 app.use("/api", auth);
 app.use("/api", shop);
+app.use("/api", product);
 
 // Middleware to handle errors
 app.use(errorMiddleware);
