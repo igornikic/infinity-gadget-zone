@@ -201,3 +201,59 @@ describe("POST /api/product/new", () => {
       });
   });
 });
+
+describe("GET /api/produts?", () => {
+  it("should get all products that match query from database", (done) => {
+    request(app)
+      .get("/api/products?keyword=shoe&price[gte]=80&price[lte]=90&page=1")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+        expect(res.body.filteredProductsCount).toBeGreaterThan(0);
+        done();
+      });
+  });
+
+  it("should get all products that match query when keyword is not provided from database", (done) => {
+    request(app)
+      .get("/api/products?price[gt]=80&price[lt]=90&page=1")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+        expect(res.body.filteredProductsCount).toBeGreaterThan(0);
+        done();
+      });
+  });
+
+  it("should get all products that match query when page is not provided from database", (done) => {
+    request(app)
+      .get("/api/products?keyword=shoe&price[gt]=80&price[lt]=90")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+        expect(res.body.filteredProductsCount).toBeGreaterThan(0);
+        done();
+      });
+  });
+});

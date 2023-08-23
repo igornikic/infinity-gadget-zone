@@ -1,6 +1,6 @@
 import express from "express";
 
-import { newProduct } from "../controllers/productController.js";
+import { newProduct, getProducts } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -9,6 +9,9 @@ import {
   isAuthenticatedSeller,
   authorizeRoles,
 } from "../middlewares/auth.js";
+
+// Public routes
+router.route("/products").get(getProducts);
 
 // Private/Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);

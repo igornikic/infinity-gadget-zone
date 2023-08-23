@@ -3,6 +3,7 @@ import Shop from "../models/shopModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import { search, filter, pagination } from "../utils/queryFeatures.js";
 
 // @desc    Create new product (Seller only)
 // @route   POST /api/product/new
@@ -48,4 +49,32 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
     });
     return next(error);
   }
+});
+
+// @desc    Get all products (example: /api/products?keyword=laptop&price[gte]=1&price[lte]=3&page=1)
+// @route   GET /api/products?
+// @access  Public
+export const getProducts = catchAsyncErrors(async (req, res, next) => {
+  const resPerPage = 20;
+
+  // Initialize the query
+  let query = Product.find();
+
+  // Apply search, filter and pagination features
+  query = search(query, req.query);
+  query = filter(query, req.query);
+  query = pagination(query, req.query, resPerPage);
+
+  // Get final products list
+  const products = await query;
+
+  // Get total count of products after filtering
+  const filteredProductsCount = products.length;
+
+  res.status(200).json({
+    success: true,
+    resPerPage,
+    filteredProductsCount,
+    products,
+  });
 });
