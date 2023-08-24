@@ -22,6 +22,8 @@ cloudinary.config({
 
 // Variable to store token for seller account
 let sellerToken;
+// Variable to store product id
+let productId;
 
 // Array to store public IDs of uploaded product images
 let uploadedProductPublicIds = [];
@@ -82,6 +84,8 @@ describe("POST /api/product/new", () => {
           (image) => image.public_id
         );
         uploadedProductPublicIds.push(...publicId);
+
+        productId = res.body.product._id;
 
         // Assert that the response contains the success message
         expect(res.body).toHaveProperty("success", true);
@@ -316,6 +320,43 @@ describe("GET /api/produts/shop/:id?", () => {
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", { statusCode: 404 });
         expect(res.body).toHaveProperty("message", "Shop not found");
+        done();
+      });
+  });
+});
+
+describe("GET /api/product/:id", () => {
+  it("should get product details", (done) => {
+    request(app)
+      .get(`/api/product/${productId}`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains product
+        expect(res.body).toHaveProperty("product");
+        expect(res.body.product).toHaveProperty("name", "Shoe");
+
+        done();
+      });
+  });
+
+  it("should get return error if there is not product with this id", (done) => {
+    request(app)
+      .get(`/api/product/640918348eb4dc67ab9c3373`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty("message", "Product not found");
+
         done();
       });
   });
