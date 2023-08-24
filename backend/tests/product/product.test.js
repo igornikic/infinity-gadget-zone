@@ -257,3 +257,66 @@ describe("GET /api/produts?", () => {
       });
   });
 });
+
+describe("GET /api/produts/shop/:id?", () => {
+  it("should get all shop products and sort in asc order by price", (done) => {
+    request(app)
+      .get("/api/products/shop/64d194ec5fb1cfaede33629b?sort=price")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+        expect(res.body.filteredProductsCount).toBeGreaterThan(0);
+        // Compare the prices of the first and second products
+        expect(res.body.products[0].price).toBeLessThanOrEqual(
+          res.body.products[1].price
+        );
+        done();
+      });
+  });
+
+  it("should get all shop products and sort in desc order by price", (done) => {
+    request(app)
+      .get("/api/products/shop/64d194ec5fb1cfaede33629b?sort=-price")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+        expect(res.body.filteredProductsCount).toBeGreaterThan(0);
+        // Compare the prices of the first and second products
+        expect(res.body.products[0].price).toBeGreaterThanOrEqual(
+          res.body.products[1].price
+        );
+        done();
+      });
+  });
+
+  it("should return error if there is no shop with this id", (done) => {
+    request(app)
+      .get("/api/products/shop/64d194ec5fb1cfaede33629c?keyword=shoe")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty("message", "Shop not found");
+        done();
+      });
+  });
+});

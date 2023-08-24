@@ -1,6 +1,10 @@
 import express from "express";
 
-import { newProduct, getProducts } from "../controllers/productController.js";
+import {
+  newProduct,
+  getProducts,
+  getShopProducts,
+} from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -12,6 +16,7 @@ import {
 
 // Public routes
 router.route("/products").get(getProducts);
+router.route("/products/shop/:id").get(getShopProducts);
 
 // Private/Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);

@@ -78,3 +78,35 @@ export const getProducts = catchAsyncErrors(async (req, res, next) => {
     products,
   });
 });
+
+// @desc    Get all shop products (example: /api/products/shop/:id?keyword=laptop&price[gte]=1&price[lte]=3&page=1&sort=-views)
+// @route   GET /api/products/shop/:id?
+// @access  Public
+export const getShopProducts = catchAsyncErrors(async (req, res, next) => {
+  const resPerPage = 20;
+
+  const shop = await Shop.findById(req.params.id);
+  if (!shop) {
+    return next(new ErrorHandler("Shop not found", 404));
+  }
+
+  let query = Product.find({ shop });
+
+  // Apply search, filter, and pagination features
+  query = search(query, req.query);
+  query = filter(query, req.query);
+  query = pagination(query, req.query, resPerPage);
+
+  // Get final products list
+  const products = await query;
+
+  // Get total count of products after filtering
+  const filteredProductsCount = products.length;
+
+  res.status(200).json({
+    success: true,
+    resPerPage,
+    filteredProductsCount,
+    products,
+  });
+});

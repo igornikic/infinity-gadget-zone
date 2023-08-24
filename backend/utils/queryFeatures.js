@@ -13,9 +13,10 @@ const search = (query, queryStr) => {
 };
 
 const filter = (query, queryStr) => {
+  // Create a copy of the query string parameters
   const queryCopy = { ...queryStr };
 
-  const removeFields = ["keyword", "limit", "page"];
+  const removeFields = ["keyword", "limit", "page", "sort"];
   removeFields.forEach((el) => delete queryCopy[el]);
 
   // Convert queryCopy to JSON and replace comparison operators
@@ -26,6 +27,22 @@ const filter = (query, queryStr) => {
   );
 
   query = query.find(JSON.parse(queryStrJSON));
+
+  // Check if sorting criteria is specified in the query parameters
+  if (queryStr.sort) {
+    // Remove any '-' prefix to get the actual field name
+    const fieldName = queryStr.sort.replace(/^-/, "");
+
+    // Determine sorting order based on prefix ('-' prefix is desc order)
+    const sortOrder = queryStr.sort.startsWith("-") ? -1 : 1;
+
+    // Create sorting criteria object
+    const sortCriteria = { [fieldName]: sortOrder };
+
+    // Apply sorting to query
+    query = query.sort(sortCriteria);
+  }
+
   return query;
 };
 
