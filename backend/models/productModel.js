@@ -111,7 +111,17 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  views: {
+  views: [
+    {
+      _id: false,
+      viewerId: String,
+      viewedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+  totalViews: {
     type: Number,
     default: 0,
   },
