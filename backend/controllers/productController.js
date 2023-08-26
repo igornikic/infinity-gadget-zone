@@ -127,6 +127,57 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc    Create new product review
+// @route   PUT /api/review
+// @access  Private
+export const createProductReview = catchAsyncErrors(async (req, res, next) => {
+  const { rating, comment, productId } = req.body;
+
+  const review = {
+    user: req.user._id,
+    username: req.user.username,
+    rating: Number(rating),
+    comment,
+  };
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    return next(
+      new ErrorHandler(`Product not found with id: ${productId}`, 404)
+    );
+  }
+
+  // Check if user has already reviewed this product
+  const isReviewed = product.reviews.find(
+    (review) => review.user.toString() === req.user._id.toString()
+  );
+
+  // Update review if user has already reviewed product, if not add a new review
+  if (isReviewed) {
+    product.reviews.forEach((review) => {
+      if (review.user.toString() === req.user._id.toString()) {
+        review.comment = comment;
+        review.rating = rating;
+      }
+    });
+  } else {
+    product.reviews.push(review);
+    product.numOfReviews = product.reviews.length;
+  }
+
+  // Calcule average rating for product
+  product.ratings =
+    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    product.reviews.length;
+
+  await product.save({ validateBeforeSave: false });
+
+  res.status(201).json({
+    success: true,
+  });
+});
+
 // Admin Routes
 
 // @desc    All products (Admin only)

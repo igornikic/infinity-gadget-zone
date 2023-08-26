@@ -5,6 +5,7 @@ import {
   getProducts,
   getShopProducts,
   getProductDetails,
+  createProductReview,
   allProducts,
   deleteProduct,
 } from "../controllers/productController.js";
@@ -23,6 +24,9 @@ import { calculateViews } from "../middlewares/views.js";
 router.route("/products").get(getProducts);
 router.route("/products/shop/:id").get(getShopProducts);
 router.route("/product/:id").get(calculateViews, getProductDetails);
+
+//Private routes
+router.route("/review").put(isAuthenticatedUser, createProductReview);
 
 // Private/Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);
