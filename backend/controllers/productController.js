@@ -126,3 +126,39 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
     product,
   });
 });
+
+// @desc    Delete product by ID (Admin/Seller)
+// @route   DELETE Seller (/api/shop/product/:id) Admin (/api/admin/product/:id)
+// @access  Private/Admin/Seller
+export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
+  // Find product by id
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(
+      new ErrorHandler(`Product not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  // Only admins or authorized shop owner can delete this product.
+  if (
+    (req.shop && req.shop.id && req.shop.id !== product.shop.toString()) ||
+    (req.user && req.user.role !== "admin")
+  ) {
+    return next(
+      new ErrorHandler("You are not authorized to delete this product", 403)
+    );
+  }
+
+  // Deleting images associated with the product
+  for (let i = 0; i < product.images.length; i++) {
+    await cloudinary.uploader.destroy(product.images[i].public_id);
+  }
+
+  await Product.deleteOne({ _id: product._id });
+
+  res.status(200).json({
+    success: true,
+    message: "Product Deleted successfully",
+  });
+});

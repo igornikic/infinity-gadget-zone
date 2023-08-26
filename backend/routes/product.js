@@ -5,6 +5,7 @@ import {
   getProducts,
   getShopProducts,
   getProductDetails,
+  deleteProduct,
 } from "../controllers/productController.js";
 
 const router = express.Router();
@@ -24,5 +25,11 @@ router.route("/product/:id").get(calculateViews, getProductDetails);
 
 // Private/Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);
+router.route("/shop/product/:id").delete(isAuthenticatedSeller, deleteProduct);
+
+// Admin routes
+router
+  .route("/admin/product/:id")
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 
 export default router;
