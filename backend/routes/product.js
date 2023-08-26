@@ -5,6 +5,7 @@ import {
   getProducts,
   getShopProducts,
   getProductDetails,
+  allProducts,
   deleteProduct,
 } from "../controllers/productController.js";
 
@@ -28,6 +29,10 @@ router.route("/product/new").post(isAuthenticatedSeller, newProduct);
 router.route("/shop/product/:id").delete(isAuthenticatedSeller, deleteProduct);
 
 // Admin routes
+router
+  .route("/admin/products")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), allProducts);
+
 router
   .route("/admin/product/:id")
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);

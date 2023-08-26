@@ -192,3 +192,22 @@ describe("DELETE /api/admin/product/:id", () => {
       });
   });
 });
+
+describe("GET /api/admin/products", () => {
+  it("should get all products from database", (done) => {
+    request(app)
+      .get("/api/admin/products")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains products
+        expect(res.body).toHaveProperty("products");
+
+        done();
+      });
+  });
+});

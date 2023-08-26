@@ -127,6 +127,21 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Admin Routes
+
+// @desc    All products (Admin only)
+// @route   GET /api/shops
+// @access  Private/Admin
+export const allProducts = catchAsyncErrors(async (req, res, next) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    products,
+  });
+});
+
 // @desc    Delete product by ID (Admin/Seller)
 // @route   DELETE Seller (/api/shop/product/:id) Admin (/api/admin/product/:id)
 // @access  Private/Admin/Seller
