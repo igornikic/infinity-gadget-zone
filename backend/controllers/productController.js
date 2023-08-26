@@ -178,6 +178,23 @@ export const createProductReview = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// @desc    Get product reviews
+// @route   GET /api/reviews?id=
+// @access  Private
+export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
+  // Find product using provided product ID in query parameter
+  const product = await Product.findById(req.query.id);
+
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    reviews: product.reviews,
+  });
+});
+
 // Admin Routes
 
 // @desc    All products (Admin only)

@@ -107,3 +107,41 @@ describe("POST /api/review", () => {
       });
   });
 });
+
+describe("GET /api/reviews?id=", () => {
+  it("should get all product reviews", (done) => {
+    request(app)
+      .get("/api/reviews?id=64e736e4c8509ba9f32562ee")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains reviews
+        expect(res.body).toHaveProperty("reviews");
+        done();
+      });
+  });
+
+  it("should return error if there is no product with this id", (done) => {
+    request(app)
+      .get("/api/reviews?id=64e736e4c8509ba9f32562ed")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty("message", "Product not found");
+        done();
+      });
+  });
+});

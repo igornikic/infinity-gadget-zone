@@ -6,6 +6,7 @@ import {
   getShopProducts,
   getProductDetails,
   createProductReview,
+  getProductReviews,
   allProducts,
   deleteProduct,
 } from "../controllers/productController.js";
@@ -27,6 +28,7 @@ router.route("/product/:id").get(calculateViews, getProductDetails);
 
 //Private routes
 router.route("/review").put(isAuthenticatedUser, createProductReview);
+router.route("/reviews").get(isAuthenticatedUser, getProductReviews);
 
 // Private/Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);
