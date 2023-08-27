@@ -210,7 +210,7 @@ export const logoutShop = catchAsyncErrors(async (req, res, next) => {
 
 // @desc    Get seller shop
 // @route   GET /api/shop/me
-// @access  Private
+// @access  Seller
 export const getSellerShop = catchAsyncErrors(async (req, res, next) => {
   const shop = await Shop.findById(req.shop.id);
 
@@ -222,7 +222,7 @@ export const getSellerShop = catchAsyncErrors(async (req, res, next) => {
 
 // @desc    Update shop
 // @route   PUT /api/shop/me/update
-// @access  Private
+// @access  Seller
 export const updateShop = catchAsyncErrors(async (req, res, next) => {
   const shop = await Shop.findById(req.shop.id);
 
