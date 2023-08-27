@@ -29,6 +29,13 @@ let productId;
 // Connects to a MongoDB database
 beforeAll(async () => {
   connectDatabase();
+
+  // Authorize as Admin
+  const loginRes = await request(app).post("/api/login").send({
+    email: process.env.ADMIN_TEST_EMAIL,
+    password: "sickPassword!",
+  });
+  adminToken = loginRes.body.token;
 });
 
 // Disconnects from MongoDB database
@@ -50,12 +57,19 @@ const productForDelete = async (shopId) => {
     price: 999.99,
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    ratings: 0,
+    ratings: 4,
     category: "Sports & Outdoors",
     shop: shopId,
     stock: 1,
-    numOfReviews: 0,
-    reviews: [],
+    numOfReviews: 1,
+    reviews: [
+      {
+        user: "64790344758eda847fa6895f",
+        username: "TestUser",
+        rating: 4,
+        comment: "Nice!",
+      },
+    ],
     coupons: [],
     images: [
       {
@@ -143,31 +157,46 @@ describe("DELETE /api/shop/product/:id", () => {
   });
 });
 
-describe("DELETE /api/admin/product/:id", () => {
-  it("should delete product from database", async () => {
-    try {
-      // Authorize as Admin
-      const loginRes = await request(app).post("/api/login").send({
-        email: process.env.ADMIN_TEST_EMAIL,
-        password: "sickPassword!",
-      });
-      adminToken = loginRes.body.token;
+describe("DELETE /api/reviews?productId=&id=", () => {
+  it("should delete product review if admin is making request", (done) => {
+    request(app)
+      .delete(`/api/reviews?productId=${productId}&id=64790344758eda847fa6895f`)
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
 
-      const deleteRes = await request(app)
-        .delete(`/api/admin/product/${productId}`)
-        .set("Accept", "application/json")
-        .set("Cookie", [`user_token=${adminToken}`])
-        .expect("Content-Type", /json/)
-        .expect(200);
-      // Assert that the response contains success
-      expect(deleteRes.body).toHaveProperty("success", true);
-      expect(deleteRes.body).toHaveProperty(
-        "message",
-        "Product Deleted successfully"
-      );
-    } catch (error) {
-      throw error;
-    }
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty(
+          "message",
+          "Review Deleted successfully"
+        );
+        done();
+      });
+  });
+});
+
+describe("DELETE /api/admin/product/:id", () => {
+  it("should delete product from database", (done) => {
+    request(app)
+      .delete(`/api/admin/product/${productId}`)
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${adminToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        // Assert that the response contains success
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty(
+          "message",
+          "Product Deleted successfully"
+        );
+        done();
+      });
   });
 
   it("should return error if there is no product with this id", (done) => {

@@ -7,6 +7,7 @@ import {
   getProductDetails,
   createProductReview,
   getProductReviews,
+  deleteReview,
   allProducts,
   deleteProduct,
 } from "../controllers/productController.js";
@@ -28,9 +29,12 @@ router.route("/product/:id").get(calculateViews, getProductDetails);
 
 //Private routes
 router.route("/review").put(isAuthenticatedUser, createProductReview);
-router.route("/reviews").get(isAuthenticatedUser, getProductReviews);
+router
+  .route("/reviews")
+  .get(isAuthenticatedUser, getProductReviews)
+  .delete(isAuthenticatedUser, deleteReview);
 
-// Private/Seller routes
+// Seller routes
 router.route("/product/new").post(isAuthenticatedSeller, newProduct);
 router.route("/shop/product/:id").delete(isAuthenticatedSeller, deleteProduct);
 
@@ -38,9 +42,11 @@ router.route("/shop/product/:id").delete(isAuthenticatedSeller, deleteProduct);
 router
   .route("/admin/products")
   .get(isAuthenticatedUser, authorizeRoles("admin"), allProducts);
-
 router
   .route("/admin/product/:id")
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
+router
+  .route("/reviews")
+  .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteReview);
 
 export default router;

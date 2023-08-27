@@ -149,18 +149,14 @@ export const createProductReview = catchAsyncErrors(async (req, res, next) => {
   }
 
   // Check if user has already reviewed this product
-  const isReviewed = product.reviews.find(
+  const existingReviewIndex = product.reviews.findIndex(
     (review) => review.user.toString() === req.user._id.toString()
   );
 
-  // Update review if user has already reviewed product, if not add a new review
-  if (isReviewed) {
-    product.reviews.forEach((review) => {
-      if (review.user.toString() === req.user._id.toString()) {
-        review.comment = comment;
-        review.rating = rating;
-      }
-    });
+  if (existingReviewIndex !== -1) {
+    // Update existing review
+    product.reviews[existingReviewIndex].comment = comment;
+    product.reviews[existingReviewIndex].rating = rating;
   } else {
     product.reviews.push(review);
     product.numOfReviews = product.reviews.length;
@@ -191,7 +187,59 @@ export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    ratings: product.ratings,
+    numOfReviews: product.numOfReviews,
     reviews: product.reviews,
+  });
+});
+
+// @desc    Delete product review
+// @route   DELETE /api/reviews?productId=&id=
+// @access  Private/Admin
+export const deleteReview = catchAsyncErrors(async (req, res, next) => {
+  // Find product using provided product ID in query parameter
+  const product = await Product.findById(req.query.productId);
+
+  // Find index of review to delete
+  const reviewIndex = product.reviews.findIndex((review) => {
+    // Check if it's user's review
+    const isUserReview =
+      review.user.toString() === req.user._id.toString() &&
+      review.user.toString() === req.query.id.toString();
+
+    // Check if admin is making request
+    const isAdmin =
+      req.user.role === "admin" &&
+      review.user.toString() === req.query.id.toString();
+
+    return isUserReview || isAdmin;
+  });
+
+  // Check if review exists
+  if (reviewIndex === -1) {
+    return next(new ErrorHandler("Review not found", 404));
+  }
+
+  // Remove review from array
+  product.reviews.splice(reviewIndex, 1);
+
+  // Calculate number of reviews
+  const numOfReviews = product.reviews.length;
+
+  // Calculate average rating for product
+  const ratings =
+    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    (numOfReviews || 1);
+
+  // Update product ratings and numOfReviews
+  product.ratings = ratings;
+  product.numOfReviews = numOfReviews;
+
+  await product.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Review Deleted successfully",
   });
 });
 
@@ -212,7 +260,7 @@ export const allProducts = catchAsyncErrors(async (req, res, next) => {
 
 // @desc    Delete product by ID (Admin/Seller)
 // @route   DELETE Seller (/api/shop/product/:id) Admin (/api/admin/product/:id)
-// @access  Private/Admin/Seller
+// @access  Admin/Seller
 export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
   // Find product by id
   const product = await Product.findById(req.params.id);

@@ -18,8 +18,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Variable to store token for admin account
-let adminToken;
+// Variable to store token for user account
+let userToken;
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -27,10 +27,10 @@ beforeAll(async () => {
 
   // Authorize as Test Admin
   const res = await request(app).post("/api/login").send({
-    email: process.env.ADMIN_TEST_EMAIL,
+    email: process.env.USER_TEST_EMAIL,
     password: "sickPassword!",
   });
-  adminToken = res.body.token;
+  userToken = res.body.token;
 });
 
 // Disconnects from MongoDB database
@@ -48,7 +48,7 @@ describe("POST /api/review", () => {
         productId: "64e736e4c8509ba9f32562ee",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${adminToken}`])
+      .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)
       .expect(201)
       .end((err, res) => {
@@ -69,7 +69,7 @@ describe("POST /api/review", () => {
         productId: "64e736e4c8509ba9f32562ee",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${adminToken}`])
+      .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)
       .expect(201)
       .end((err, res) => {
@@ -90,7 +90,7 @@ describe("POST /api/review", () => {
         productId: "64e736e4c8509ba9f32562ed",
       })
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${adminToken}`])
+      .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)
       .expect(404)
       .end((err, res) => {
@@ -108,12 +108,56 @@ describe("POST /api/review", () => {
   });
 });
 
+describe("DELETE /api/reviews?productId=&id=", () => {
+  it("should delete user's review", (done) => {
+    request(app)
+      .delete(
+        "/api/reviews?productId=64e736e4c8509ba9f32562ee&id=64790344758eda847fa6895f"
+      )
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty(
+          "message",
+          "Review Deleted successfully"
+        );
+        done();
+      });
+  });
+
+  it("should return error if there is no review with this id", (done) => {
+    request(app)
+      .delete(
+        "/api/reviews?productId=64e736e4c8509ba9f32562ee&id=64b7eca4ba043a499902bd8f"
+      )
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty("message", "Review not found");
+        done();
+      });
+  });
+});
+
 describe("GET /api/reviews?id=", () => {
   it("should get all product reviews", (done) => {
     request(app)
       .get("/api/reviews?id=64e736e4c8509ba9f32562ee")
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${adminToken}`])
+      .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)
       .expect(200)
       .end((err, res) => {
@@ -131,7 +175,7 @@ describe("GET /api/reviews?id=", () => {
     request(app)
       .get("/api/reviews?id=64e736e4c8509ba9f32562ed")
       .set("Accept", "application/json")
-      .set("Cookie", [`user_token=${adminToken}`])
+      .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)
       .expect(404)
       .end((err, res) => {

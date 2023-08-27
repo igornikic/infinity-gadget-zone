@@ -39,7 +39,7 @@ router.route("/shop/password/reset/:token").put(resetPasswordShop);
 // Unauthenticate seller route
 router.route("/shop/logout").get(logoutShop);
 
-// Private routes
+// Seller routes
 router.route("/shop/me").get(isAuthenticatedSeller, getSellerShop);
 router.route("/shop/me/update").put(isAuthenticatedSeller, updateShop);
 
