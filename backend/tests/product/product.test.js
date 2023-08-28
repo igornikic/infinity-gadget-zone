@@ -64,7 +64,6 @@ describe("POST /api/product/new", () => {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         ratings: 0,
         category: "Sports & Outdoors",
-        shop: "64d194ec5fb1cfaede33629b",
         stock: 1,
         numOfReviews: 0,
         reviews: [],
@@ -103,7 +102,6 @@ describe("POST /api/product/new", () => {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         ratings: 0,
         category: "Sports & Outdoors",
-        shop: "64d194ec5fb1cfaede33629b",
         stock: 1,
         numOfReviews: 0,
         reviews: [],
@@ -132,39 +130,6 @@ describe("POST /api/product/new", () => {
       });
   });
 
-  it("should return an error if shop is not found", (done) => {
-    request(app)
-      .post("/api/product/new")
-      .send({
-        name: "Laptop",
-        price: 999.99,
-        description:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        ratings: 0,
-        category: "Electronics",
-        shop: "64d194ec5fb1cfaede33629c",
-        stock: 1,
-        numOfReviews: 0,
-        reviews: [],
-        coupons: [],
-        images: [testProduct],
-      })
-      .set("Accept", "application/json")
-      .set("Cookie", [`shop_token=${sellerToken}`])
-      .expect("Content-Type", /json/)
-      .expect(404)
-      .end((err, res) => {
-        if (err) return done(err);
-        // Assert that the response contains the error message
-        expect(res.body).toHaveProperty("success", false);
-        expect(res.body).toHaveProperty("error", {
-          statusCode: 404,
-        });
-        expect(res.body).toHaveProperty("message", "Shop not found");
-        done();
-      });
-  });
-
   it("should return an error if required fields are empty", (done) => {
     request(app)
       .post("/api/product/new")
@@ -175,7 +140,6 @@ describe("POST /api/product/new", () => {
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         ratings: 0,
         category: "Electronics",
-        shop: "64d194ec5fb1cfaede33629b",
         stock: 1,
         numOfReviews: 0,
         reviews: [],

@@ -9,11 +9,7 @@ import { search, filter, pagination } from "../utils/queryFeatures.js";
 // @route   POST /api/product/new
 // @access  Seller
 export const newProduct = catchAsyncErrors(async (req, res, next) => {
-  const shop = await Shop.findById(req.body.shop);
-
-  if (!shop) {
-    return next(new ErrorHandler("Shop not found", 404));
-  }
+  const shop = await Shop.findById(req.shop.id);
 
   // Get array of images from req body
   const images = req.body.images;
@@ -32,8 +28,9 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  // Replace images in req body with uploaded image links
+  // Replace images in req body with uploaded image links and set shop
   req.body.images = imagesLinks;
+  req.body.shop = req.shop.id;
 
   try {
     const product = await Product.create(req.body);
