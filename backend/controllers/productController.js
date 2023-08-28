@@ -7,7 +7,7 @@ import { search, filter, pagination } from "../utils/queryFeatures.js";
 
 // @desc    Create new product (Seller only)
 // @route   POST /api/product/new
-// @access  Private/Seller
+// @access  Seller
 export const newProduct = catchAsyncErrors(async (req, res, next) => {
   const shop = await Shop.findById(req.body.shop);
 

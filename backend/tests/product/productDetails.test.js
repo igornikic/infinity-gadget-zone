@@ -132,7 +132,7 @@ describe("GET /api/product/:id", () => {
     }
   });
 
-  it("should get return error if there is not product with this id", (done) => {
+  it("should return error if there is no product with this id", (done) => {
     request(app)
       .get(`/api/product/640918348eb4dc67ab9c3373`)
       .set("Accept", "application/json")
