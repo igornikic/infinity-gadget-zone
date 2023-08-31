@@ -101,12 +101,6 @@ const productSchema = new mongoose.Schema({
     ref: "Shop",
     required: true,
   },
-  coupons: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "Coupon",
-    },
-  ],
   sold: {
     type: Number,
     default: 0,
