@@ -83,6 +83,9 @@ const calculateOrderPrices = async (order) => {
   order.totalPrice = calcTotalPrice;
 };
 
+// @desc    Create new order
+// @route   POST /api/order/new
+// @access  Private
 export const newOrder = catchAsyncErrors(async (req, res, next) => {
   const { orderItems, shippingInfo, paymentInfo } = req.body;
 
@@ -102,6 +105,25 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
   await order.save();
 
   res.status(201).json({
+    success: true,
+    order,
+  });
+});
+
+// @desc    Get Order Details by ID
+// @route   GET /api/order/:id
+// @access  Private
+export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
+  const order = await Order.findOne({
+    _id: req.params.id,
+    user: req.user.id,
+  }).populate("user", "username email");
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found", 404));
+  }
+
+  res.status(200).json({
     success: true,
     order,
   });
