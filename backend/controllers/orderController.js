@@ -128,3 +128,17 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
     order,
   });
 });
+
+// @desc    Get User Orders
+// @route   GET /api/orders/me
+// @access  Private
+export const getUserOrders = catchAsyncErrors(async (req, res, next) => {
+  const orders = await Order.find({ user: req.user.id }).sort({
+    createdAt: -1,
+  });
+
+  res.status(200).json({
+    success: true,
+    orders,
+  });
+});

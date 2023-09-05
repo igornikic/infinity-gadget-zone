@@ -67,3 +67,22 @@ describe("GET /api/order/:id", () => {
       });
   });
 });
+
+describe("GET /api/orders/me", () => {
+  it("should get user orders", (done) => {
+    request(app)
+      .get("/api/orders/me")
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains orders
+        expect(res.body).toHaveProperty("orders");
+
+        done();
+      });
+  });
+});
