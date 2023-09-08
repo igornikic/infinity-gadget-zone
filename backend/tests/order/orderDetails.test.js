@@ -12,6 +12,8 @@ dotenv.config({ path: "backend/config/config.env" });
 
 // Variable to store token for user account
 let userToken;
+// Variable to store token for seller account
+let sellerToken;
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -23,6 +25,17 @@ beforeAll(async () => {
     password: "sickPassword!",
   });
   userToken = res.body.token;
+
+  // Update test order status to Processing
+  await Order.findByIdAndUpdate(
+    "64f6475ee7dd47eb7b39d208",
+    { orderStatus: "Processing" },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
 });
 
 // Disconnects from MongoDB database
@@ -98,7 +111,7 @@ describe("GET /api/orders/shop", () => {
           password: "reallygood!",
         })
         .expect(200);
-      const sellerToken = loginRes.body.token;
+      sellerToken = loginRes.body.token;
 
       // Get order details
       const orderRes = await request(app)
@@ -113,5 +126,92 @@ describe("GET /api/orders/shop", () => {
     } catch (error) {
       throw error;
     }
+  });
+});
+
+describe("PUT /api/order/:id", () => {
+  it("should update order status to shipped", (done) => {
+    request(app)
+      .put("/api/order/64f6475ee7dd47eb7b39d208")
+      .send({
+        orderStatus: "Shipped",
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains order
+        expect(res.body).toHaveProperty("order");
+        expect(res.body.order).toHaveProperty("orderStatus", "Shipped");
+
+        done();
+      });
+  });
+
+  it("should return error if there is no order with this id", (done) => {
+    request(app)
+      .put(`/api/order/640918348eb4dc67ab9c3373`)
+      .send({ orderStatus: "Shipped" })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Order not found with this id"
+        );
+
+        done();
+      });
+  });
+
+  it("should update order status to delivered", (done) => {
+    request(app)
+      .put("/api/order/64f6475ee7dd47eb7b39d208")
+      .send({
+        orderStatus: "Delivered",
+      })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains order
+        expect(res.body).toHaveProperty("order");
+        expect(res.body.order).toHaveProperty("orderStatus", "Delivered");
+
+        done();
+      });
+  });
+
+  it("should return error if order is already delivered", (done) => {
+    request(app)
+      .put(`/api/order/64f6475ee7dd47eb7b39d208`)
+      .send({ orederStatus: "Shipped" })
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty("message", "Order already delivered");
+
+        done();
+      });
   });
 });

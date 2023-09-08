@@ -1,4 +1,5 @@
 import Order from "../models/orderModel.js";
+import Shop from "../models/shopModel.js";
 
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
@@ -109,5 +110,44 @@ export const getShopOrders = catchAsyncErrors(async (req, res, next) => {
     success: true,
     count: orders.length,
     orders,
+  });
+});
+
+// @desc    Update Order
+// @route   PUT /api/order/:id
+// @access  Seller
+export const updateOrder = catchAsyncErrors(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this id", 404));
+  }
+
+  // Check if order is already delivered
+  if (order.orderStatus === "Delivered") {
+    return next(new ErrorHandler("Order already delivered", 400));
+  }
+
+  // If new order status is Delivered, update delivery and payment status
+  if (req.body.orderStatus === "Delivered") {
+    order.deliveredAt = Date.now();
+    order.paymentInfo.status = "Succeeded";
+
+    // Find the associated shop and update its available balance
+    const shop = await Shop.findById(req.shop.id);
+    shop.availableBalance += order.totalPrice;
+
+    await shop.save();
+  }
+
+  // Update order status
+  order.orderStatus = req.body.orderStatus;
+
+  // Save updated order
+  await order.save();
+
+  res.status(200).json({
+    success: true,
+    order,
   });
 });

@@ -102,6 +102,10 @@ const orderSchema = mongoose.Schema({
   orderStatus: {
     type: String,
     required: true,
+    enum: {
+      values: ["Processing", "Shipped", "Delivered"],
+      message: "Please select valid status",
+    },
     default: "Processing",
   },
   deliveredAt: {
