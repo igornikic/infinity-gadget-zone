@@ -76,6 +76,22 @@ describe("POST /api/orer/new", () => {
               "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
             product: "64e736e4c8509ba9f32562ee",
           },
+          {
+            name: "SomethingElse34",
+            price: 22.99,
+            quantity: 1,
+            image:
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1693248321/IGZproducts/qfvlzzxlkwi6d5gq4am1.png",
+            product: "64eceb42ea4a92dcd7c05c59",
+          },
+          {
+            name: "Test Product",
+            price: 1000,
+            quantity: 1,
+            image:
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
+            product: "64e736e4c8509ba9f32562ee",
+          },
         ],
         shippingInfo: {
           address: "Savski venac 8",
@@ -98,7 +114,7 @@ describe("POST /api/orer/new", () => {
 
         // Assert that the response contains the success message
         expect(res.body).toHaveProperty("success", true);
-        expect(res.body).toHaveProperty("order");
+        expect(res.body).toHaveProperty("userOrder");
         done();
       });
   });
@@ -139,7 +155,7 @@ describe("POST /api/orer/new", () => {
 
         // Assert that the response contains the success message
         expect(res.body).toHaveProperty("success", true);
-        expect(res.body).toHaveProperty("order");
+        expect(res.body).toHaveProperty("userOrder");
         done();
       });
   });
@@ -180,7 +196,7 @@ describe("POST /api/orer/new", () => {
 
         // Assert that the response contains the success message
         expect(res.body).toHaveProperty("success", true);
-        expect(res.body).toHaveProperty("order");
+        expect(res.body).toHaveProperty("userOrder");
         done();
       });
   });
@@ -238,7 +254,7 @@ describe("POST /api/orer/new", () => {
           {
             name: "Test Product",
             price: 1000,
-            quantity: 3,
+            quantity: 1,
             image:
               "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
             product: "64e736e4c8509ba9f32562ef",

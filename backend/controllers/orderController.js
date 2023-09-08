@@ -1,87 +1,11 @@
-import Coupon from "../models/couponModel.js";
-import Product from "../models/productModel.js";
 import Order from "../models/orderModel.js";
 
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
-
-// Function to calculate order prices
-const calculateOrderPrices = async (order) => {
-  // Calculate items price
-  order.itemsPrice = order.orderItems
-    .reduce((total, item) => total + item.price * item.quantity, 0)
-    .toFixed(2);
-
-  // Calculate tax price (10% of total item price fixed)
-  order.taxPrice = (order.itemsPrice * 0.1).toFixed(2);
-
-  // Fixed shipping price, 10 euros
-  order.shippingPrice = 10;
-
-  // Calculate total discount amount
-  let totalDiscountAmount = 0;
-
-  for (const orderItem of order.orderItems) {
-    const coupon = await Coupon.findOne({
-      code: orderItem.couponCode,
-      products: orderItem.product,
-      expirationDate: { $gte: new Date() },
-      numOfCoupons: { $gt: 0 },
-    });
-
-    // Throw error if coupon code is provided and not valid
-    if (!coupon && orderItem.couponCode) {
-      throw new ErrorHandler("Coupon is invalid or has expired", 400);
-    }
-
-    const product = await Product.findById(orderItem.product);
-
-    if (!product) {
-      throw new ErrorHandler("Product not found", 404);
-    }
-
-    // Update product stock and sold count
-    product.stock -= orderItem.quantity;
-    product.sold += orderItem.quantity;
-
-    await product.save();
-
-    if (coupon) {
-      // Calculate total discount amount based on discount type
-      let itemQuantityToDiscount = orderItem.quantity;
-
-      if (coupon.numOfCoupons < itemQuantityToDiscount) {
-        itemQuantityToDiscount = coupon.numOfCoupons;
-        coupon.numOfCoupons = 0;
-      } else {
-        coupon.numOfCoupons -= itemQuantityToDiscount;
-      }
-
-      // Calculate item discount based on discount type
-      const itemDiscount =
-        coupon.discountType === "amount"
-          ? coupon.discountValue * itemQuantityToDiscount
-          : (coupon.discountValue / 100) *
-            orderItem.price *
-            itemQuantityToDiscount;
-
-      orderItem.discountAmount += itemDiscount.toFixed(2);
-      totalDiscountAmount += parseFloat(itemDiscount.toFixed(2));
-
-      await coupon.save();
-    }
-  }
-
-  // Calculate total price including discounts
-  const calcTotalPrice = (
-    parseFloat(order.itemsPrice) +
-    parseFloat(order.taxPrice) +
-    order.shippingPrice -
-    totalDiscountAmount
-  ).toFixed(2);
-
-  order.totalPrice = calcTotalPrice;
-};
+import {
+  calculateOrderPrices,
+  groupOrderItemsBySeller,
+} from "../utils/orderUtils.js";
 
 // @desc    Create new order
 // @route   POST /api/order/new
@@ -89,8 +13,11 @@ const calculateOrderPrices = async (order) => {
 export const newOrder = catchAsyncErrors(async (req, res, next) => {
   const { orderItems, shippingInfo, paymentInfo } = req.body;
 
-  // Create order
-  const order = await Order.create({
+  // Group order items by shop
+  const sellerOrderGroups = await groupOrderItemsBySeller(orderItems);
+
+  // Create user order
+  const userOrder = await Order.create({
     orderItems,
     shippingInfo,
     paymentInfo,
@@ -98,15 +25,42 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     user: req.user.id,
   });
 
-  // Calculate order prices
-  await calculateOrderPrices(order);
+  // Calculate prices for user order
+  await calculateOrderPrices(userOrder);
 
-  // Save order to database
-  await order.save();
+  // Save user order to database
+  await userOrder.save();
+
+  // Create orders for each seller and calculate prices for them
+  const createdOrders = [];
+
+  for (const orderData of sellerOrderGroups) {
+    const { shopId, orderItems: sellerOrderItems } = orderData;
+
+    // Create seller order
+    const sellerOrder = await Order.create({
+      orderItems: sellerOrderItems,
+      shippingInfo,
+      paymentInfo,
+      paidAt: Date.now(),
+      user: req.user.id,
+      shopId: shopId,
+    });
+
+    // Calculate order prices for seller without tax and shipping
+    await calculateOrderPrices(sellerOrder, true);
+
+    // Save seller's order to database
+    await sellerOrder.save();
+
+    // Store created seller orders
+    createdOrders.push(sellerOrder);
+  }
 
   res.status(201).json({
     success: true,
-    order,
+    userOrder,
+    // sellerOrders: createdOrders,
   });
 });
 
@@ -139,6 +93,21 @@ export const getUserOrders = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    orders,
+  });
+});
+
+// @desc    Get Shop Orders
+// @route   GET /api/orders/shop
+// @access  Seller
+export const getShopOrders = catchAsyncErrors(async (req, res, next) => {
+  const orders = await Order.find({ shopId: req.shop.id }).sort({
+    createdAt: -1,
+  });
+
+  res.status(200).json({
+    success: true,
+    count: orders.length,
     orders,
   });
 });

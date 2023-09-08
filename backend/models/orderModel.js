@@ -58,6 +58,9 @@ const orderSchema = mongoose.Schema({
       couponCode: {
         type: String,
       },
+      couponsUsed: {
+        type: Number,
+      },
     },
   ],
   paymentInfo: {
@@ -68,6 +71,9 @@ const orderSchema = mongoose.Schema({
       type: String,
     },
   },
+  shopId: {
+    type: String,
+  },
   paidAt: {
     type: Date,
   },
@@ -76,14 +82,16 @@ const orderSchema = mongoose.Schema({
     required: true,
     default: 0.0,
   },
+  totalDiscount: {
+    type: Number,
+    default: 0.0,
+  },
   taxPrice: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   shippingPrice: {
     type: Number,
-    required: true,
     default: 0.0,
   },
   totalPrice: {

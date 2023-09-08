@@ -86,3 +86,32 @@ describe("GET /api/orders/me", () => {
       });
   });
 });
+
+describe("GET /api/orders/shop", () => {
+  it("should get shop orders", async () => {
+    try {
+      // Authenticate as seller
+      const loginRes = await request(app)
+        .post("/api/shop/login")
+        .send({
+          shopEmail: process.env.SELLER_TEST_EMAIL,
+          password: "reallygood!",
+        })
+        .expect(200);
+      const sellerToken = loginRes.body.token;
+
+      // Get order details
+      const orderRes = await request(app)
+        .get("/api/orders/shop")
+        .set("Accept", "application/json")
+        .set("Cookie", [`shop_token=${sellerToken}`])
+        .expect("Content-Type", /json/)
+        .expect(200);
+
+      // Assert that the response contains shop orders
+      expect(orderRes.body).toHaveProperty("orders");
+    } catch (error) {
+      throw error;
+    }
+  });
+});
