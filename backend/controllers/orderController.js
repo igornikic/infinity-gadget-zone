@@ -151,3 +151,24 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
     order,
   });
 });
+
+// @desc    Delete order by ID
+// @route   DELETE /api/order/:id
+// @access  Seller
+export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
+  // Find order by id
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    return next(
+      new ErrorHandler(`Order not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  await Order.deleteOne({ _id: order._id });
+
+  res.status(200).json({
+    success: true,
+    message: "Order Deleted successfully",
+  });
+});

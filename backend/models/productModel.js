@@ -65,7 +65,7 @@ const productSchema = new mongoose.Schema({
   stock: {
     type: Number,
     required: [true, "Please enter product stock"],
-    min: [1, "Product stock cannot be less than 1"],
+    min: [0, "Product stock cannot be less than 0"],
     default: 1,
   },
   numOfReviews: {

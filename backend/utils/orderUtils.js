@@ -60,12 +60,14 @@ const calculateOrderPrices = async (order, isSellerOrder = false) => {
     }
 
     // Update product stock and sold count
-    const product = await Product.findById(orderItem.product);
+    if (!isSellerOrder) {
+      const product = await Product.findById(orderItem.product);
 
-    product.stock -= orderItem.quantity;
-    product.sold += orderItem.quantity;
+      product.stock -= orderItem.quantity;
+      product.sold += orderItem.quantity;
 
-    await product.save();
+      await product.save();
+    }
   }
 
   const calcTotalPrice = (
@@ -98,7 +100,7 @@ const groupOrderItemsBySeller = async (orderItems) => {
     // Find product associated with order item
     const product = await Product.findById(orderItem.product);
 
-    if (!product) {
+    if (!product || product.stock === 0) {
       throw new ErrorHandler("Product not found", 404);
     }
 

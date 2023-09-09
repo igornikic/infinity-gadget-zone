@@ -6,6 +6,7 @@ import {
   getUserOrders,
   getShopOrders,
   updateOrder,
+  deleteOrder,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -22,6 +23,9 @@ router.route("/orders/me").get(isAuthenticatedUser, getUserOrders);
 
 // Seller routes
 router.route("/orders/shop").get(isAuthenticatedSeller, getShopOrders);
-router.route("/order/:id").put(isAuthenticatedSeller, updateOrder);
+router
+  .route("/order/:id")
+  .put(isAuthenticatedSeller, updateOrder)
+  .delete(isAuthenticatedSeller, deleteOrder);
 
 export default router;

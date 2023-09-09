@@ -1,3 +1,4 @@
+import Order from "../../models/orderModel.js";
 import Coupon from "../../models/couponModel.js";
 
 import request from "supertest";
@@ -14,9 +15,12 @@ dotenv.config({ path: "backend/config/config.env" });
 const couponExparationDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
 // Variable to store token for user account
 let userToken;
-// Variables to store inserted coupons
+// Variable to store token for seller account
+let sellerToken;
+// Variables to store inserted coupons and order id
 let insertedCoupon1;
 let insertedCoupon2;
+let orderId;
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -58,11 +62,16 @@ afterAll(async () => {
   // Delete test coupons
   await Coupon.deleteOne({ _id: insertedCoupon1._id });
   await Coupon.deleteOne({ _id: insertedCoupon2._id });
+  // Delete orders made by test user but exclude order that we need for other tests
+  await Order.deleteMany({
+    user: "64790344758eda847fa6895f",
+    _id: { $ne: "64f6475ee7dd47eb7b39d208" },
+  });
 
   await mongoose.connection.close();
 });
 
-describe("POST /api/orer/new", () => {
+describe("POST /api/order/new", () => {
   it("should create new order without discount coupon", (done) => {
     request(app)
       .post("/api/order/new")
@@ -194,6 +203,9 @@ describe("POST /api/orer/new", () => {
       .end((err, res) => {
         if (err) return done(err);
 
+        // Store order id
+        orderId = res.body.userOrder._id;
+
         // Assert that the response contains the success message
         expect(res.body).toHaveProperty("success", true);
         expect(res.body).toHaveProperty("userOrder");
@@ -283,6 +295,56 @@ describe("POST /api/orer/new", () => {
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", { statusCode: 404 });
         expect(res.body).toHaveProperty("message", "Product not found");
+        done();
+      });
+  });
+});
+
+describe("DELETE /api/order/:id", () => {
+  it("should delete order from database", async () => {
+    try {
+      // Authorize as Test Seller
+      const loginRes = await request(app).post("/api/shop/login").send({
+        shopEmail: process.env.SELLER_TEST_EMAIL,
+        password: "reallygood!",
+      });
+      sellerToken = loginRes.body.token;
+
+      const delRes = await request(app)
+        .delete(`/api/order/${orderId}`)
+        .set("Accept", "application/json")
+        .set("Cookie", [`shop_token=${sellerToken}`])
+        .expect("Content-Type", /json/)
+        .expect(200);
+
+      // Assert that the response contains the success message
+      expect(delRes.body).toHaveProperty("success", true);
+      expect(delRes.body).toHaveProperty(
+        "message",
+        "Order Deleted successfully"
+      );
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it("should return error if there is no order with this id", (done) => {
+    request(app)
+      .delete(`/api/order/64b510cc5c620d7bef933d5f`)
+      .set("Accept", "application/json")
+      .set("Cookie", [`shop_token=${sellerToken}`])
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 404 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Order not found with id: 64b510cc5c620d7bef933d5f"
+        );
         done();
       });
   });
