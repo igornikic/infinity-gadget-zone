@@ -27,12 +27,14 @@ import auth from "./routes/auth.js";
 import shop from "./routes/shop.js";
 import product from "./routes/product.js";
 import coupon from "./routes/coupon.js";
+import order from "./routes/order.js";
 
 // Application-level middlewares
 app.use("/api", auth);
 app.use("/api", shop);
 app.use("/api", product);
 app.use("/api", coupon);
+app.use("/api", order);
 
 // Middleware to handle errors
 app.use(errorMiddleware);

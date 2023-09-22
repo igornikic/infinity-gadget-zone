@@ -44,7 +44,7 @@ const couponSchema = new mongoose.Schema({
   numOfCoupons: {
     type: Number,
     required: [true, "Please enter number of coupons"],
-    min: [1, "Number of coupons cannot be less than 1"],
+    min: [0, "Number of coupons cannot be less than 0"],
     default: 1,
   },
   expirationDate: {

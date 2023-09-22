@@ -90,7 +90,10 @@ describe("POST /api/coupon/new", () => {
         // Assert that the response contains the error message
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", { statusCode: 400 });
-        expect(res.body).toHaveProperty("message", "Duplicate code entered");
+        expect(res.body).toHaveProperty(
+          "message",
+          "Duplicate code,shop entered"
+        );
         done();
       });
   });
