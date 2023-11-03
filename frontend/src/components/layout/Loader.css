@@ -1,0 +1,30 @@
+/* Loader styles */
+
+#loader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+
+#outline {
+  stroke-dasharray: 2.427766571px, 242.776657104492px;
+  stroke-dashoffset: 0;
+  animation: inf 1.6s linear infinite;
+}
+
+@keyframes inf {
+  12.5% {
+    stroke-dasharray: 34.189498138px, 242.776657104492px;
+    stroke-dashoffset: -26.70532241488px;
+  }
+  43.75% {
+    stroke-dasharray: 85.47132748682px, 242.776657104492px;
+    stroke-dashoffset: -85.16932648682px;
+  }
+  100% {
+    stroke-dasharray: 2.427766571px, 242.776657104492px;
+    stroke-dashoffset: -240.348890433px;
+  }
+}

@@ -1,0 +1,56 @@
+/* Alert styles */
+
+.alert {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #fff;
+  z-index: 999;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.alert svg {
+  position: absolute;
+  left: 2%;
+}
+
+.alert h3 {
+  width: 90%;
+}
+
+.alert-error {
+  background-color: var(--dark-red);
+}
+
+.alert-success {
+  background-color: var(--dark-green);
+}
+
+.alert.show {
+  animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+}
+
+@keyframes slideIn {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 12px;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}
