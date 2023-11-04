@@ -23,6 +23,10 @@
 
 /* Element styles */
 
+html {
+  overflow-y: scroll;
+}
+
 body,
 html {
   overflow-x: hidden;
@@ -37,13 +41,6 @@ body {
 /* Scrollbar styles */
 ::-webkit-scrollbar {
   width: 16px;
-}
-
-@supports (scrollbar-gutter: stable) {
-  html {
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-  }
 }
 
 ::-webkit-scrollbar-track {

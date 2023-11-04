@@ -34,7 +34,7 @@ const Alert = ({ message, clear, type }) => {
 
   return alertMessage ? (
     <div className={`alert show alert-${type}`} role="alert">
-      {(type = "error" ? <ErrorIcon /> : <SuccessIcon />)}
+      {type === "error" ? <ErrorIcon /> : <SuccessIcon />}
       <h3>{alertMessage}</h3>
     </div>
   ) : null;
