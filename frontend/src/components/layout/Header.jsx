@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Search from "./Search";
+
+import { googleLogin } from "../../features/user/authSlice";
 
 import logo from "../../assets/logo-52x48.webp";
 import {
@@ -10,10 +13,20 @@ import {
   LoginIcon,
   CartIcon,
   OrderIcon,
+  DashboardIcon,
+  ProfileIcon,
+  LogoutIcon,
 } from "../../icons/NavIcons";
 import "./Header.css";
 
 const Header = () => {
+  const dispatch = useDispatch();
+
+  // Extract auth state from redux store
+  const { user, isAuthenticated, loading, error } = useSelector(
+    (state) => state.auth
+  );
+
   const [isNavVisible, setNavVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,6 +39,26 @@ const Header = () => {
   const toggleNav = () => {
     setNavVisible(!isNavVisible);
   };
+
+  useEffect(() => {
+    // Show google one-tap login option if user is not authenticated
+    if (!isAuthenticated && window.google) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
+        auto_select: false,
+        cancel_on_tap_outside: false,
+        context: "signin",
+        callback: (response) => {
+          // Check if user picked google account
+          if (response.credential) {
+            const token = { token: response.credential };
+            dispatch(googleLogin(token));
+          }
+        },
+      });
+      window.google.accounts.id.prompt();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Close dropdown if we click outside of it's content
@@ -76,29 +109,73 @@ const Header = () => {
             title="Profile"
             onClick={toggleDropdown}
           >
-            <>
-              <AvatarIcon className="dropdown-toggle" />
-              {isOpen && (
-                <ul className="dropdown-menu">
-                  <li>
-                    {/* Register link */}
-                    <Link to="/register">
-                      <pre>
-                        <RegisterIcon /> Register
-                      </pre>
-                    </Link>
-                  </li>
-                  <li>
-                    {/* Login link */}
-                    <Link to="/login">
-                      <pre>
-                        <LoginIcon /> Login
-                      </pre>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </>
+            {user !== null && Object.keys(user).length !== 0 ? (
+              <>
+                {/* User avatar image */}
+                <img
+                  src={user && user.avatar.url}
+                  width="24px"
+                  height="24px"
+                  alt="Avatar"
+                  className="rounded-circle"
+                />
+                {isOpen && (
+                  <ul className="dropdown-menu">
+                    {user &&
+                      (user.role === "admin" || user.role === "seller") && (
+                        <li>
+                          {/* Dashboard link */}
+                          <Link to="#">
+                            <pre>
+                              <DashboardIcon /> Dashboard
+                            </pre>
+                          </Link>
+                        </li>
+                      )}
+                    <li>
+                      {/* Profile link */}
+                      <Link to="/me">
+                        <pre>
+                          <ProfileIcon /> Profile
+                        </pre>
+                      </Link>
+                    </li>
+                    <li>
+                      {/* Logout */}
+                      <Link to="/">
+                        <pre>
+                          <LogoutIcon /> Logout
+                        </pre>
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </>
+            ) : (
+              <>
+                <AvatarIcon className="dropdown-toggle" />
+                {isOpen && (
+                  <ul className="dropdown-menu">
+                    <li>
+                      {/* Register link */}
+                      <Link to="/register">
+                        <pre>
+                          <RegisterIcon /> Register
+                        </pre>
+                      </Link>
+                    </li>
+                    <li>
+                      {/* Login link */}
+                      <Link to="/login">
+                        <pre>
+                          <LoginIcon /> Login
+                        </pre>
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </>
+            )}
           </div>
           {/* Order link */}
           <Link to="#" className="order" title="Orders">

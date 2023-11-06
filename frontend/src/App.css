@@ -17,7 +17,7 @@
   --input-hover-color: #ccc;
   --list-hover-color: #c5c5c5;
   --button-color: #ff6500;
-  --dark-red: #ff1e00;
+  --dark-red: #b60000;
   --dark-green: #00ff00;
 }
 
@@ -58,7 +58,6 @@ body {
 /* Heading Styles */
 h1 {
   text-align: center;
-  color: var(--white);
   margin-bottom: 10px;
 }
 

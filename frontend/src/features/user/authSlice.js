@@ -8,6 +8,26 @@ const initialState = {
   error: null,
 };
 
+// Google login
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async (token, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post("/api/google-login", token, config);
+
+      return data.user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Register user
 export const register = createAsyncThunk(
   "auth/register",
@@ -52,6 +72,20 @@ export const login = createAsyncThunk(
   }
 );
 
+// Load user
+export const loadUser = createAsyncThunk(
+  "auth/loadUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`/api/me`);
+
+      return data.user;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -62,12 +96,25 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(isAnyOf(register.pending, login.pending), (state, action) => {
-        state.loading = true;
-        state.isAuthenticated = false;
-      })
       .addMatcher(
-        isAnyOf(register.fulfilled, login.fulfilled),
+        isAnyOf(
+          register.pending,
+          login.pending,
+          googleLogin.pending,
+          loadUser.pending
+        ),
+        (state, action) => {
+          state.loading = true;
+          state.isAuthenticated = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          register.fulfilled,
+          login.fulfilled,
+          googleLogin.fulfilled,
+          loadUser.fulfilled
+        ),
         (state, action) => {
           state.loading = false;
           state.isAuthenticated = true;
@@ -76,7 +123,12 @@ export const authSlice = createSlice({
         }
       )
       .addMatcher(
-        isAnyOf(register.rejected, login.rejected),
+        isAnyOf(
+          register.rejected,
+          login.rejected,
+          googleLogin.rejected,
+          loadUser.rejected
+        ),
         (state, action) => {
           state.loading = false;
           state.isAuthenticated = false;

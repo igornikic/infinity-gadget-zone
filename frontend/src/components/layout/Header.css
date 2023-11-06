@@ -90,6 +90,12 @@ nav {
   justify-content: center;
 }
 
+/* Google one-tap login */
+#credential_picker_container {
+  top: 10% !important;
+  left: 0 !important;
+}
+
 /* Hamburger button for mobile devices */
 
 .show {

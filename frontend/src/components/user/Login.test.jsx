@@ -6,7 +6,7 @@ import { render, screen, fireEvent, act } from "../utils/test-utils.jsx";
 import { server } from "../../mocks/server.js";
 import { userTestData as utd } from "../../test-data/user/userTestData.js";
 
-describe("POST /api/login", () => {
+describe("POST /login", () => {
   it("should login user and return a token", async () => {
     // Render Login component
     const { store } = render(<Login />);

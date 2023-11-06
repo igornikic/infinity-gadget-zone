@@ -36,3 +36,13 @@ export const loginHandler = rest.post("/api/login", (req, res, ctx) => {
     ctx.status(200)
   );
 });
+
+export const profileHandler = rest.get("/api/me", (req, res, ctx) => {
+  return res(
+    ctx.json({
+      success: true,
+      user: userTestData,
+    }),
+    ctx.status(200)
+  );
+});

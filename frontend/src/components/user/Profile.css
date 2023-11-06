@@ -1,0 +1,49 @@
+/* Profile styles */
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.profile-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-col div {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.profile-col div p {
+  margin: 5px 0;
+}
+
+.profile-col div strong {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+}
+
+.profile-avatar {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.profile-avatar img {
+  border-radius: 50%;
+}
+
+/* Media Queries */
+
+/* Tablet Screen - 768px */
+@media only screen and (max-width: 768px) {
+  .profile-col {
+    width: 100%;
+    text-align: center;
+  }
+}

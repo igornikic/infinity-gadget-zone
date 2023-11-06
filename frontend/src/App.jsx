@@ -10,8 +10,9 @@ import Loader from "./components/layout/Loader";
 // Authentication Imports
 const Register = lazy(() => import("./components/user/Register"));
 const Login = lazy(() => import("./components/user/Login"));
+const Profile = lazy(() => import("./components/user/Profile"));
 
-// import ProtectedRoute from "./routes/ProtectedRoute";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           {/* Authentication routes */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/me" element={<ProtectedRoute element={Profile} />} />
         </Routes>
         <Footer />
       </Suspense>

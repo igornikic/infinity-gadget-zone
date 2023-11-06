@@ -16,6 +16,10 @@
   min-height: 100vh;
 }
 
+.form-style form h1 {
+  color: var(--white);
+}
+
 /* changes for register form  */
 .register-form {
   margin-top: 0;
@@ -42,6 +46,7 @@
   height: 48px;
   font-size: 18px;
   text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .submit-button:hover {

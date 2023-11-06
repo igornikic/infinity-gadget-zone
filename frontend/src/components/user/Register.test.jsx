@@ -6,7 +6,7 @@ import { render, screen, fireEvent, act } from "../utils/test-utils.jsx";
 import { server } from "../../mocks/server.js";
 import { userTestData as utd } from "../../test-data/user/userTestData.js";
 
-describe("POST /api/register", () => {
+describe("POST /register", () => {
   it("should register user with default avatar", async () => {
     // Render Register component
     const { store } = render(<Register />);
