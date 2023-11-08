@@ -46,3 +46,15 @@ export const profileHandler = rest.get("/api/me", (req, res, ctx) => {
     ctx.status(200)
   );
 });
+
+export const logoutHandler = rest.get("/api/logout", (req, res, ctx) => {
+  return res(
+    ctx.json({
+      user: null,
+      loading: false,
+      isAuthenticated: false,
+      error: null,
+    }),
+    ctx.status(200)
+  );
+});

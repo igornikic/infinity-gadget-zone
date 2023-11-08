@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import Alert from "../utils/Alert";
 import Search from "./Search";
 
-import { googleLogin } from "../../features/user/authSlice";
+import {
+  googleLogin,
+  logout,
+  clearErrors,
+} from "../../features/user/authSlice";
 
 import logo from "../../assets/logo-52x48.webp";
 import {
@@ -29,6 +34,7 @@ const Header = () => {
 
   const [isNavVisible, setNavVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogout, setIsLogout] = useState(false);
 
   // Toggle dropdown onClick
   const toggleDropdown = () => {
@@ -38,6 +44,15 @@ const Header = () => {
   // Toggle nav visibility for smaller devices
   const toggleNav = () => {
     setNavVisible(!isNavVisible);
+  };
+
+  // Dispatche logout action to the Redux store
+  const logoutHandler = () => {
+    dispatch(logout());
+    setIsLogout(true);
+    setTimeout(() => {
+      setIsLogout(false);
+    }, 5000);
   };
 
   useEffect(() => {
@@ -77,6 +92,14 @@ const Header = () => {
 
   return (
     <header>
+      {/* Display error message if there is an error */}
+      {error && <Alert message={error} clear={clearErrors} type={"error"} />}
+
+      {/* Display success message upon successful logout  */}
+      {isLogout && (
+        <Alert message={"Logged Out Successfully"} type={"success"} />
+      )}
+
       <nav>
         {/* Company logo */}
         <Link to="/" className="logo">
@@ -94,7 +117,12 @@ const Header = () => {
 
         {/* Hamburger button for smaller devices */}
         <div className="removed">
-          <div className="hamburger-icon" id="icon" onClick={toggleNav}>
+          <div
+            className="hamburger-icon"
+            id="icon"
+            data-testid="hamburger-icon"
+            onClick={toggleNav}
+          >
             <div className={`icon-1 ${isNavVisible ? "a" : ""}`} id="a"></div>
             <div className={`icon-2 ${isNavVisible ? "c" : ""}`} id="b"></div>
             <div className={`icon-3 ${isNavVisible ? "b" : ""}`} id="c"></div>
@@ -142,7 +170,7 @@ const Header = () => {
                     </li>
                     <li>
                       {/* Logout */}
-                      <Link to="/">
+                      <Link to="/" onClick={logoutHandler}>
                         <pre>
                           <LogoutIcon /> Logout
                         </pre>

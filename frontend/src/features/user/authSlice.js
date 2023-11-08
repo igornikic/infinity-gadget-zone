@@ -86,6 +86,18 @@ export const loadUser = createAsyncThunk(
   }
 );
 
+// Logout user
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      await axios.get(`/api/logout`);
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -96,6 +108,14 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(logout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.error = action.payload;
+      })
       .addMatcher(
         isAnyOf(
           register.pending,
