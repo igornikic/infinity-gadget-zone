@@ -37,16 +37,6 @@ export const loginHandler = rest.post("/api/login", (req, res, ctx) => {
   );
 });
 
-export const profileHandler = rest.get("/api/me", (req, res, ctx) => {
-  return res(
-    ctx.json({
-      success: true,
-      user: userTestData,
-    }),
-    ctx.status(200)
-  );
-});
-
 export const logoutHandler = rest.get("/api/logout", (req, res, ctx) => {
   return res(
     ctx.json({

@@ -130,7 +130,7 @@ const Header = () => {
         </div>
 
         {/* Navbar links for smaller devices */}
-        <div className={`flex-center ${isNavVisible ? "show" : ""}`}>
+        <div className={`flex-center ${isNavVisible ? "show-nav" : ""}`}>
           {/* Profile dropdown */}
           <div
             className="avatar dropdown"

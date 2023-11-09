@@ -80,7 +80,7 @@ const Login = () => {
       )}
 
       <div className="background-authentication">
-        <div className="form-style">
+        <div className="form-style login-form">
           <form onSubmit={onSubmit}>
             <h1>Login</h1>
             <div>

@@ -20,7 +20,6 @@ const sendUserToken = (user, statusCode, res) => {
     ),
     // Prevent client-side scripts from accessing data
     httpOnly: true,
-    sameSite: "none",
     path: "/",
   };
 

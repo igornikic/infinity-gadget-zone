@@ -117,12 +117,7 @@ export const authSlice = createSlice({
         state.error = action.payload;
       })
       .addMatcher(
-        isAnyOf(
-          register.pending,
-          login.pending,
-          googleLogin.pending,
-          loadUser.pending
-        ),
+        isAnyOf(register.pending, login.pending, googleLogin.pending),
         (state, action) => {
           state.loading = true;
           state.isAuthenticated = false;

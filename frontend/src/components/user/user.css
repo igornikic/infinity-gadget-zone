@@ -12,7 +12,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -64px; /* nav height */
   min-height: 100vh;
 }
 
@@ -20,9 +19,9 @@
   color: var(--white);
 }
 
-/* changes for register form  */
-.register-form {
-  margin-top: 0;
+/* changes for login form  */
+.login-form {
+  margin-top: -64px;
 }
 
 .form-icons {

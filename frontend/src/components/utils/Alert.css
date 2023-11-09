@@ -13,6 +13,7 @@
   z-index: 999;
   transform: translateX(-50%);
   text-align: center;
+  min-height: 40px;
 }
 
 .alert svg {
@@ -33,10 +34,10 @@
 }
 
 .alert.show {
-  animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+  animation: slideInAlert 0.5s ease, fadeOutAlert 0.5s ease 4.5s forwards;
 }
 
-@keyframes slideIn {
+@keyframes slideInAlert {
   0% {
     top: -10%;
   }
@@ -45,7 +46,7 @@
   }
 }
 
-@keyframes fadeOut {
+@keyframes fadeOutAlert {
   0% {
     opacity: 1;
   }

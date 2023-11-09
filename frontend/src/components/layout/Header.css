@@ -98,7 +98,7 @@ nav {
 
 /* Hamburger button for mobile devices */
 
-.show {
+.show-nav {
   position: relative;
   padding: 10px;
   opacity: 1;
@@ -153,7 +153,7 @@ nav {
 
 /* Hamburger button animations */
 
-@keyframes slideIn {
+@keyframes slideInNav {
   0% {
     width: 0%;
     opacity: 0;
@@ -165,7 +165,7 @@ nav {
   }
 }
 
-@keyframes shotup {
+@keyframes shotupNav {
   0% {
     transform: translateY(300%);
     opacity: 0;

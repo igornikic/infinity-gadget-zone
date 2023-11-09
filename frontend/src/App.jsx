@@ -7,10 +7,11 @@ const Home = lazy(() => import("./components/layout/Home"));
 import Footer from "./components/layout/Footer";
 import Loader from "./components/layout/Loader";
 
-// Authentication Imports
+// Authentication/User Imports
 const Register = lazy(() => import("./components/user/Register"));
 const Login = lazy(() => import("./components/user/Login"));
 const Profile = lazy(() => import("./components/user/Profile"));
+const UpdateProfile = lazy(() => import("./components/user/UpdateProfile"));
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -21,10 +22,14 @@ const App = () => {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Authentication routes */}
+          {/* Authentication/User routes */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/me" element={<ProtectedRoute element={Profile} />} />
+          <Route
+            path="/me/update"
+            element={<ProtectedRoute element={UpdateProfile} />}
+          />
         </Routes>
         <Footer />
       </Suspense>

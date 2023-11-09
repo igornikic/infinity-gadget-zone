@@ -112,7 +112,7 @@ const Register = () => {
       )}
 
       <div className="background-authentication">
-        <div className="form-style register-form">
+        <div className="form-style">
           <form onSubmit={onSubmit} encType="multipart/form-data">
             <h1>Create Your Account</h1>
             <div>
