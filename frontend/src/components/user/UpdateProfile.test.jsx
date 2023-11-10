@@ -2,7 +2,6 @@ import React from "react";
 import { rest } from "msw";
 
 import UpdateProfile from "./UpdateProfile";
-import Login from "./Login";
 import { render, screen, fireEvent, act } from "../utils/test-utils.jsx";
 import { server } from "../../mocks/server.js";
 import { userTestData as utd } from "../../test-data/user/userTestData.js";
@@ -78,7 +77,7 @@ describe("PUT /me/update", () => {
     expect(userState2.isUpdated).toBe(false);
   });
 
-  it("should return an error if update fail", async () => {
+  it("should return an error if update profile fail", async () => {
     // Render UpdateProfile component
     const { store } = render(<UpdateProfile />, { initialState });
 

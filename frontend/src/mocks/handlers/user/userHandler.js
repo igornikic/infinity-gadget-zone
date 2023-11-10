@@ -35,3 +35,16 @@ export const profileHandler = rest.get("/api/me", (req, res, ctx) => {
     ctx.status(200)
   );
 });
+
+export const passwordUpdateHandler = rest.put(
+  "/api/password/update",
+  (req, res, ctx) => {
+    return res(
+      ctx.json({
+        success: true,
+        user: userTestData,
+      }),
+      ctx.status(200)
+    );
+  }
+);

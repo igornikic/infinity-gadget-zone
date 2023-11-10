@@ -4,7 +4,6 @@
   position: fixed;
   top: 12px;
   left: 50%;
-  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,6 +13,7 @@
   transform: translateX(-50%);
   text-align: center;
   min-height: 40px;
+  min-width: 58%;
 }
 
 .alert svg {

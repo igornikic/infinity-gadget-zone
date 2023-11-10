@@ -19,8 +19,9 @@
   color: var(--white);
 }
 
-/* changes for login form  */
-.login-form {
+/* changes for login and update password forms  */
+.login-form,
+.update-password-form {
   margin-top: -64px;
 }
 
@@ -153,6 +154,13 @@ input::file-selector-button {
 @media (min-width: 425.1px) and (max-width: 1024px) {
   .background-authentication {
     background-image: url("../../assets/auth-bg-1024x1024.webp");
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .login-form,
+  .update-password-form {
+    margin-top: -128px;
   }
 }
 
