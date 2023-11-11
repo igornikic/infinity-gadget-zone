@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Tests
 
 on:
   pull_request:
@@ -19,6 +19,7 @@ env:
   USER_TEST_EMAIL: ${{vars.USER_TEST_EMAIL}}
   SELLER_TEST_EMAIL: ${{vars.SELLER_TEST_EMAIL}}
   ADMIN_TEST_EMAIL: ${{vars.ADMIN_TEST_EMAIL}}
+  VITE_ENV: ${{vars.VITE_ENV}}
 
   DB_LOCAL_URI: ${{secrets.DB_LOCAL_URI}}
   DB_URI: ${{secrets.DB_URI}}
@@ -30,22 +31,65 @@ env:
   GOOGLE_OAUTH_CLIENT_ID: ${{secrets.GOOGLE_OAUTH_CLIENT_ID}}
   GOOGLE_OAUTH_CLIENT_SECRET: ${{secrets.GOOGLE_OAUTH_CLIENT_SECRET}}
   SMTP_PASSWORD: ${{secrets.SMTP_PASSWORD}}
+  VITE_ENCRYPTION_KEY: ${{secrets.VITE_ENCRYPTION_KEY}}
+  VITE_GOOGLE_OAUTH_CLIENT_ID: ${{secrets.VITE_GOOGLE_OAUTH_CLIENT_ID}}
 
 jobs:
   tests:
-  
-    runs-on: ubuntu-latest
+    backend-tests:
+      runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
+      strategy:
+        matrix:
+          node-version: [18.x]
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run test
+      steps:
+        - name: Checkout code
+        - uses: actions/checkout@v3
+
+        - name: Setup Node.js
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Install dependencies
+        - run: npm ci
+
+        - name: Build
+        - run: npm run build --if-present
+
+        - name: Run backend tests
+        - run: npm run test
+
+    frontend-tests:
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          node-version: [18.x]
+
+      steps:
+        - name: Checkout code
+        - uses: actions/checkout@v3
+
+        - name: Setup Node.js
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+
+        - name: Install dependencies
+          run: |
+            cd frontend
+            npm ci
+
+        - name: Build Frontend
+          run: |
+            cd frontend
+            npm run build --if-present
+
+        - name: Run Frontend Tests
+          run: |
+            cd frontend
+            npm run test
