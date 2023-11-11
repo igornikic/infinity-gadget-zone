@@ -9,7 +9,7 @@ const app = express();
 
 // Load env variables with dotenv in DEVELOPMENT mode
 if (process.env.NODE_ENV !== "PRODUCTION")
-  dotenv.config({ path: "backend/config/config.env" });
+  dotenv.config({ path: "config/config.env" });
 
 app.use(
   fileUpload({

@@ -1,8 +1,8 @@
 # Backend Node.js dependencies
-/node_modules/
+node_modules
 
 # Backend coverages
-coverage/
+coverage
 
 # Frontend Node.js dependencies
 /frontend/node_modules/
@@ -11,7 +11,7 @@ coverage/
 /frontend/build
 
 # Backend configuration file
-/backend/config/config.env
+/config/config.env
 
 # Frontend environment variables
 /frontend/.env.local

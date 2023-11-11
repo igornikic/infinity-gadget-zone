@@ -1,0 +1,181 @@
+/* Layout styles */
+
+/* Authentication Form Styles */
+.background-authentication {
+  background-size: cover;
+  background-position: center;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.form-style {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.form-style form h1 {
+  color: var(--white);
+}
+
+/* changes in some forms  */
+.login-form,
+.update-password-form,
+.forgot-password-form,
+.new-password-form {
+  margin-top: -64px;
+}
+
+.form-icons {
+  color: var(--white);
+}
+
+.submit-button {
+  display: inline-block;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  width: 100%;
+  will-change: box-shadow, transform;
+  background-color: var(--button-color);
+  box-shadow: 0px 2px 4px rgba(45, 35, 66, 0.4),
+    0px 7px 13px -3px rgba(45, 35, 66, 0.3),
+    inset 0px -3px 0px rgba(58, 65, 111, 0.5);
+  padding: 0 32px;
+  border-radius: 6px;
+  color: var(--black);
+  height: 48px;
+  font-size: 18px;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.submit-button:hover {
+  box-shadow: 0px 4px 8px rgb(45 35 66 / 40%),
+    0px 7px 13px -3px rgb(45 35 66 / 30%),
+    inset 0px -3px 0px var(--button-color);
+}
+
+.submit-button:active {
+  box-shadow: inset 0px 3px 7px var(--button-color);
+}
+
+/* Register Component Styles */
+
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 55%;
+  right: 0;
+  cursor: pointer;
+}
+
+.input-upload {
+  height: 100px;
+  color: transparent;
+  background-color: var(--grey);
+}
+
+.input-upload::before {
+  content: "Upload avatar";
+  cursor: pointer;
+  color: grey;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+input::file-selector-button {
+  visibility: hidden;
+}
+
+/* Wrappers */
+
+.avatar-wrapper {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.avatar-wrapper div:first-of-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+}
+
+.file-input-wrapper {
+  height: 100px;
+  margin-top: 5px;
+}
+
+/* Icon Styles */
+.bi-cloud-arrow-up-fill {
+  display: flex;
+  margin-top: -73px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: grey;
+  pointer-events: none;
+  animation: moveUpDown 2s infinite;
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Login Component Styles */
+
+#forgot-password {
+  color: var(--white);
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Media Queries */
+
+@media only screen and (min-width: 1024.1px) {
+  .background-authentication {
+    background-image: url("../../assets/auth-bg-2048x2048.webp");
+  }
+}
+
+@media (min-width: 425.1px) and (max-width: 1024px) {
+  .background-authentication {
+    background-image: url("../../assets/auth-bg-1024x1024.webp");
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .login-form,
+  .update-password-form {
+    margin-top: -128px;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .background-authentication {
+    background-image: url("../../assets/auth-bg-512x512.webp");
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}

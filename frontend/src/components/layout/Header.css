@@ -1,0 +1,263 @@
+/* Element styles */
+
+/* Anchor styles */
+nav a {
+  text-decoration: none;
+  height: 24px;
+}
+
+/* Input styles  */
+input[type="search"]::-webkit-search-cancel-button {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  padding-right: 5px;
+}
+
+/* Pre styles */
+li a pre {
+  display: flex;
+  align-items: center;
+}
+
+li:hover {
+  background-color: var(--input-hover-color);
+}
+
+/* Header component */
+
+.logo {
+  position: relative;
+  height: auto;
+  z-index: 2;
+  padding-left: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.logo img {
+  image-rendering: pixelated;
+}
+
+header {
+  background-color: var(--light-grey);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 998;
+}
+
+nav {
+  height: 64px;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-weight: bold;
+}
+
+.flex-center {
+  opacity: 0;
+  display: none;
+  transition: all 600ms ease-out;
+  transition-delay: 100ms;
+  flex: 0.3;
+  width: 100% !important;
+}
+
+.flex-center > * {
+  margin: 0 10px;
+}
+
+.cart {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--dark-red);
+  color: #fff;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Google one-tap login */
+#credential_picker_container {
+  top: 10% !important;
+  left: 0 !important;
+}
+
+/* Hamburger button for mobile devices */
+
+.show-nav {
+  position: relative;
+  padding: 10px;
+  opacity: 1;
+  z-index: 2;
+  background-color: var(--light-grey);
+}
+
+.icon-1,
+.icon-2,
+.icon-3 {
+  position: absolute;
+  right: 5%;
+  bottom: 50%;
+  width: 32px;
+  height: 3px;
+  background-color: black;
+  transition: all 400ms cubic-bezier(0.84, 0.06, 0.52, 1.8);
+}
+
+.icon-1 {
+  transform: translateY(-8px);
+  animation-delay: 100ms;
+}
+
+.icon-3 {
+  transform: translateY(8px);
+  animation-delay: 250ms;
+}
+
+.hamburger-icon {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  height: 60px;
+  width: 35px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+}
+
+.icon-1.a {
+  transform: rotate(40deg);
+}
+
+.icon-3.b {
+  transform: rotate(-40deg);
+}
+
+.icon-2.c {
+  opacity: 0;
+}
+
+/* Hamburger button animations */
+
+@keyframes slideInNav {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+
+  100% {
+    width: 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes shotupNav {
+  0% {
+    transform: translateY(300%);
+    opacity: 0;
+  }
+
+  90% {
+    transform: translateY(-50px);
+  }
+
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+/* Dropdown menu for smaller devices */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  height: 24px;
+}
+
+.dropdown-toggle {
+  padding: 10px 20px;
+  background-color: #eaeaea;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu li a {
+  display: block;
+  height: 100%;
+  padding: 10px;
+  color: #333333;
+  text-decoration: none;
+}
+
+.dropdown-menu {
+  display: block;
+}
+
+/* Media Queries */
+
+/* Icons always visable for bigger devices */
+@media (min-width: 768.1px) {
+  .flex-center {
+    opacity: 1;
+  }
+}
+
+/* Tablet - 768px */
+@media (max-width: 768px) {
+  .removed > * {
+    display: inherit;
+    visibility: visible;
+  }
+  nav {
+    display: block;
+    background-color: unset;
+  }
+}
+
+/* Mobile S - Tablet  320px - 768px */
+@media (min-width: 320px) and (max-width: 768px) {
+  /* Add text next to icons */
+  .avatar::before {
+    content: "Profile ";
+    vertical-align: super;
+    color: black;
+  }
+  .order::before {
+    content: "Orders ";
+    vertical-align: super;
+    color: black;
+  }
+  .cart::before {
+    content: "Cart ";
+    vertical-align: super;
+    color: black;
+  }
+}

@@ -1,1 +1,1 @@
-export default "backend/__mocks__/test-product2.jpg";
+export default "__mocks__/test-product2.jpg";

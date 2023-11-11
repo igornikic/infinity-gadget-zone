@@ -10,7 +10,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendUserToken from "../utils/userToken.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID, null, {
   cookie_policy: "single_host_origin",
@@ -138,16 +138,20 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 // @route   GET /api/logout
 // @access  Public
 export const logout = catchAsyncErrors(async (req, res, next) => {
-  // Set the token cookie to null and set the expires date to the current time
-  res.cookie("user_token", null, {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-  });
+  try {
+    // Set the token cookie to null and set the expires date to the current time
+    res.cookie("user_token", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    });
 
-  res.status(200).json({
-    success: true,
-    message: "Logged out",
-  });
+    res.status(200).json({
+      success: true,
+      message: "Logged out",
+    });
+  } catch (error) {
+    return next(new ErrorHandler("Logout failed", 500));
+  }
 });
 
 // @desc    Get user profile

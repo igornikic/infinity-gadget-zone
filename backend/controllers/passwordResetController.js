@@ -10,8 +10,11 @@ import sendUserToken from "../utils/userToken.js";
 import sendShopToken from "../utils/shopToken.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
+// @desc    Send reset password email
+// @route   POST /api/password/forgot
+// @access  Public
 const forgot = (Model, queryField, resetUrlPath) =>
   catchAsyncErrors(async (req, res, next) => {
     const frontendUrl = process.env.FRONTEND_URL;
