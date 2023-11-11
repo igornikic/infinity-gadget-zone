@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 import connectDatabase from "../../config/database.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Variable to store token for seller account
 let sellerToken;

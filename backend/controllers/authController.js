@@ -10,7 +10,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendUserToken from "../utils/userToken.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID, null, {
   cookie_policy: "single_host_origin",

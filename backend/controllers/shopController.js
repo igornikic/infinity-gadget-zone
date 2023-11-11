@@ -9,7 +9,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendShopToken from "../utils/shopToken.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // @desc    Create Shop
 // @route   POST /api/seller/new

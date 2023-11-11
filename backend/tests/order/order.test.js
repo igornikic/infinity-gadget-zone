@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import connectDatabase from "../../config/database.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Constant that will represent 7d coupon validation
 const couponExparationDate = Date.now() + 7 * 24 * 60 * 60 * 1000;

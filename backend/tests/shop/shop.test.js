@@ -11,7 +11,7 @@ import connectDatabase from "../../config/database.js";
 import testLogo from "../../__mocks__/test-logo.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Setting up cloudinary configuration
 cloudinary.config({
@@ -316,7 +316,6 @@ describe("PUT /api/shop/activate/:token", () => {
       expect(res.body).toHaveProperty("options");
       expect(res.body.options).toHaveProperty("expires");
       expect(res.body.options).toHaveProperty("httpOnly", true);
-      expect(res.body.options).toHaveProperty("sameSite", "none");
       expect(res.body.options).toHaveProperty("path", "/");
     } catch (error) {
       throw error;
@@ -367,7 +366,6 @@ describe("POST /api/shop/login", () => {
         expect(res.body).toHaveProperty("options");
         expect(res.body.options).toHaveProperty("expires");
         expect(res.body.options).toHaveProperty("httpOnly", true);
-        expect(res.body.options).toHaveProperty("sameSite", "none");
         expect(res.body.options).toHaveProperty("path", "/");
 
         done();

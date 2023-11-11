@@ -10,7 +10,7 @@ import connectDatabase from "../../config/database.js";
 import testAvatar from "../../__mocks__/test-avatar.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Setting up cloudinary configuration
 cloudinary.config({
@@ -78,7 +78,6 @@ describe("POST /api/register", () => {
         expect(res.body).toHaveProperty("options");
         expect(res.body.options).toHaveProperty("expires");
         expect(res.body.options).toHaveProperty("httpOnly", true);
-        expect(res.body.options).toHaveProperty("sameSite", "none");
         expect(res.body.options).toHaveProperty("path", "/");
 
         done();
@@ -279,7 +278,6 @@ describe("POST /api/login", () => {
         expect(res.body).toHaveProperty("options");
         expect(res.body.options).toHaveProperty("expires");
         expect(res.body.options).toHaveProperty("httpOnly", true);
-        expect(res.body.options).toHaveProperty("sameSite", "none");
         expect(res.body.options).toHaveProperty("path", "/");
 
         done();

@@ -10,7 +10,7 @@ import testProduct from "../../__mocks__/test-product.js";
 import connectDatabase from "../../config/database.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Setting up cloudinary configuration
 cloudinary.config({

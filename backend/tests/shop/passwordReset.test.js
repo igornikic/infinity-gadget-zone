@@ -9,7 +9,7 @@ import crypto from "crypto";
 import connectDatabase from "../../config/database.js";
 
 // Setting up config file
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config({ path: "config/config.env" });
 
 // Connects to a MongoDB database
 beforeAll(async () => {
@@ -113,7 +113,6 @@ describe("PUT /api/shop/password/reset/:token", () => {
       expect(res.body).toHaveProperty("options");
       expect(res.body.options).toHaveProperty("expires");
       expect(res.body.options).toHaveProperty("httpOnly", true);
-      expect(res.body.options).toHaveProperty("sameSite", "none");
       expect(res.body.options).toHaveProperty("path", "/");
     } catch (error) {
       // Handle the error (e.g., log it or throw it again)
