@@ -10,7 +10,7 @@ const persistConfig = {
   key: "root",
   storage,
   transforms: [stateEncryptor],
-  whitelist: ["auth"],
+  whitelist: ["auth", "forgotPassword"],
 };
 
 // Creates new persisted reducer using rootReducer and persistConfig

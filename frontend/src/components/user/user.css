@@ -22,7 +22,8 @@
 /* changes in some forms  */
 .login-form,
 .update-password-form,
-.forgot-password-form {
+.forgot-password-form,
+.new-password-form {
   margin-top: -64px;
 }
 
