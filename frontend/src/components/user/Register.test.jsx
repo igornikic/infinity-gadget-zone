@@ -157,7 +157,7 @@ describe("POST /register", () => {
     // Wait for the "Passwords do not match" message to appear
     await screen.findByText("Passwords do not match");
 
-    // Assert the success message is displayed
+    // Assert the error message is displayed
     expect(screen.getByText("Passwords do not match")).toBeInTheDocument();
 
     // Check state of auth slice in Redux store

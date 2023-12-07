@@ -17,7 +17,7 @@ import {
   UploadFileIcon,
   UserIcon,
 } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -89,7 +89,7 @@ const Register = () => {
     setShowPassword(!showPassword);
   };
 
-  // Dispatche register action to the Redux store
+  // Dispatch register action to the Redux store
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(register(formData));
@@ -244,7 +244,7 @@ const Register = () => {
                     type="file"
                     id="register-avatar"
                     name="avatar"
-                    className="input-upload"
+                    className="avatar-input-upload"
                     accept="images/*"
                     onChange={onChange}
                   />

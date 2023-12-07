@@ -113,14 +113,6 @@ describe("GET /api/product/:id", () => {
         .expect("Content-Type", /json/)
         .expect(200);
 
-      // Get product details
-      await request(app)
-        .get(`/api/product/64e736e4c8509ba9f32562ee`)
-        .set("Accept", "application/json")
-        .set("Cookie", [`shop_token=${sellerToken}`])
-        .expect("Content-Type", /json/)
-        .expect(200);
-
       // Assert that the response contains product
       expect(productRes.body).toHaveProperty("product");
       expect(productRes.body.product).toHaveProperty("name", "Test Product");

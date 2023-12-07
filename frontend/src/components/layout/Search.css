@@ -13,6 +13,11 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 80% !important;
 }
 
+#search {
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+}
+
 .search {
   position: absolute;
   top: 0;

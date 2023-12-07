@@ -12,7 +12,7 @@ import {
 } from "../../features/user/userSlice";
 
 import { EyeIcon, EyeSlashIcon, PasswordIcon } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const UpdatePassword = () => {
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const UpdatePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  // Dispatche updatePassword action to the Redux store
+  // Dispatch updatePassword action to the Redux store
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(updatePassword(formData));

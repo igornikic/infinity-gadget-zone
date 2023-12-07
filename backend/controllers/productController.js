@@ -44,7 +44,13 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
     imagesLinks.forEach(async (image) => {
       await cloudinary.uploader.destroy(image.public_id);
     });
-    return next(error);
+
+    // Extract error messages from all fields
+    const errorMessages = Object.values(error.errors)
+      .map((err) => err.message)
+      .join("\n");
+
+    return next(new ErrorHandler(errorMessages, 400));
   }
 });
 

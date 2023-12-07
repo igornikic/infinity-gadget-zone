@@ -11,7 +11,6 @@ export const reigsterHandler = rest.post("/api/register", (req, res, ctx) => {
       options: {
         expires: "2023-10-16T17:19:35.391Z",
         httpOnly: true,
-        sameSite: "none",
         path: "/",
       },
     }),
@@ -29,7 +28,6 @@ export const loginHandler = rest.post("/api/login", (req, res, ctx) => {
       options: {
         expires: "2023-11-10T18:08:59.126Z",
         httpOnly: true,
-        sameSite: "none",
         path: "/",
       },
     }),
@@ -40,10 +38,7 @@ export const loginHandler = rest.post("/api/login", (req, res, ctx) => {
 export const logoutHandler = rest.get("/api/logout", (req, res, ctx) => {
   return res(
     ctx.json({
-      user: null,
-      loading: false,
-      isAuthenticated: false,
-      error: null,
+      success: true,
     }),
     ctx.status(200)
   );

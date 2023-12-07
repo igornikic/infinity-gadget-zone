@@ -38,7 +38,7 @@ li:hover {
 }
 
 header {
-  background-color: var(--light-grey);
+  background-color: var(--white);
   position: fixed;
   top: 0;
   width: 100%;
@@ -103,7 +103,7 @@ nav {
   padding: 10px;
   opacity: 1;
   z-index: 2;
-  background-color: var(--light-grey);
+  background-color: var(--white);
 }
 
 .icon-1,

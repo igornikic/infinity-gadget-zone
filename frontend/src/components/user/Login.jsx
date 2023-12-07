@@ -14,7 +14,7 @@ import {
   EyeSlashIcon,
   PasswordIcon,
 } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  // Dispatche Login action to the Redux store
+  // Dispatch login action to the Redux store
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(login(formData));

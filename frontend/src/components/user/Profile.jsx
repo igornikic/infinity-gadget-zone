@@ -9,7 +9,7 @@ import Alert from "../utils/Alert";
 import { clearErrors } from "../../features/user/authSlice";
 
 import "./Profile.css";
-import "./user.css";
+import "../Form.css";
 
 const Profile = () => {
   // Extract auth state from redux store
@@ -34,8 +34,8 @@ const Profile = () => {
             <img
               src={user.avatar ? user.avatar.url : user.picture}
               alt={user.username}
-              width="96"
-              height="96"
+              width="96px"
+              height="96px"
               preload="auto"
             />
           </div>

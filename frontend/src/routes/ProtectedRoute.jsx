@@ -4,26 +4,32 @@ import { useSelector } from "react-redux";
 
 const ProtectedRoute = ({ isAdmin, isSeller, element: Element, ...rest }) => {
   // Get auth state from redux store
-  const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const {
+    isAuthenticated,
+    loading: loadingAuth,
+    user,
+  } = useSelector((state) => state.auth);
+  // Get shopAuth state from redux store
+  const { loading: loadingShop, shop } = useSelector((state) => state.shopAuth);
 
-  // Renders loading component if the authentication state is still loading
-  if (loading) {
+  // Renders loading component if authentication state is still loading
+  if (loadingAuth || loadingShop) {
     return null;
   }
 
-  // Navigate to login page if the user is not authenticated
-  if (!isAuthenticated) {
+  // Navigate to home page if user is not an admin and route requires admin role
+  if (isAdmin && (!user || user.role !== "admin")) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Navigate to login shop page if user is not seller and route requires seller role
+  if (isSeller && (!shop || shop.role !== "seller")) {
+    return <Navigate to="/shop/login" replace />;
+  }
+
+  // Navigate to login page if user is not authenticated
+  if (!isAuthenticated && !isSeller && !isAdmin) {
     return <Navigate to="/login" replace />;
-  }
-
-  // Navigate to home page if the user is not an admin and the route requires admin role
-  if (isAdmin && user.role !== "admin") {
-    return <Navigate to="/" replace />;
-  }
-
-  // Navigate to home page if the user is not seller and the route requires seller role
-  if (isSeller && user.role !== "seller") {
-    return <Navigate to="/" replace />;
   }
 
   return <Element {...rest} />;

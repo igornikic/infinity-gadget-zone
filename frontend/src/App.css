@@ -13,7 +13,8 @@
   --white: #ffffff;
   --black: #000000;
   --grey: #dee1e2;
-  --light-grey: #f2f2f2;
+  --background-color: #0e6ba8;
+  --unknown: #ff66d8;
   --input-hover-color: #ccc;
   --list-hover-color: #c5c5c5;
   --button-color: #ff6500;
@@ -31,6 +32,10 @@ body,
 html {
   overflow-x: hidden;
   max-width: 100%;
+}
+
+#root {
+  position: relative;
 }
 
 /* Body styles */
@@ -97,7 +102,7 @@ input {
   padding: 5px 30px;
   border: 2px solid var(--grey);
   color: rgb(14, 14, 16);
-  background: var(--grey);
+  background: var(--white);
   height: 36px;
 }
 
@@ -123,6 +128,9 @@ textarea {
 
 .rounded-circle {
   border-radius: 50%;
+  /* Ensure the image completely covers the box */
+  object-fit: cover;
+  object-position: center center;
 }
 
 .flex-center {
@@ -154,9 +162,15 @@ textarea {
 @media only screen and (max-width: 768px) {
   .inline-flex {
     display: block;
+    padding: 0 10px;
   }
   .inline-flex div {
     width: 100%;
-    margin: 10px 0;
+    margin: 0;
+    padding: 12px 0;
+  }
+
+  .inline-flex div:first-child {
+    margin: 0;
   }
 }

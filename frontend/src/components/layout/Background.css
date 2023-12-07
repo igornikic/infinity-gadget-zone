@@ -1,0 +1,130 @@
+.area {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  z-index: -1;
+}
+
+.infinity {
+  width: var(--size);
+  height: calc(var(--size) * 0.47);
+  --thickness: calc(var(--size) * 0.1);
+
+  position: relative;
+  box-sizing: content-box;
+}
+
+.infinity:before,
+.infinity:after {
+  content: "";
+  box-sizing: content-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--size) * 0.28);
+  height: calc(var(--size) * 0.28);
+  border: var(--thickness) solid #333;
+  border-radius: 50px 50px 0 50px;
+  transform: rotate(-45deg);
+}
+
+.infinity:after {
+  left: calc(44% + var(--thickness));
+  right: 0;
+  border-radius: 50px 50px 50px 0;
+  transform: rotate(45deg);
+}
+
+.circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.circles li {
+  position: absolute;
+  display: block;
+  animation: animate 15s linear infinite;
+  top: -150px;
+}
+
+.circles li:nth-child(1) {
+  left: 25%;
+  animation-delay: 0s;
+  --size: 60px;
+}
+
+.circles li:nth-child(2) {
+  left: 10%;
+  animation-delay: 2s;
+  animation-duration: 12s;
+  --size: 80px;
+}
+
+.circles li:nth-child(3) {
+  left: 70%;
+  animation-delay: 5s;
+  --size: 120px;
+}
+
+.circles li:nth-child(4) {
+  left: 40%;
+  animation-delay: 0s;
+  animation-duration: 18s;
+  --size: 50px;
+}
+
+.circles li:nth-child(5) {
+  left: 65%;
+  animation-delay: 0s;
+  --size: 90px;
+}
+
+.circles li:nth-child(6) {
+  left: 75%;
+  animation-delay: 3s;
+  --size: 70px;
+}
+
+.circles li:nth-child(7) {
+  left: 35%;
+  animation-delay: 7s;
+  --size: 100px;
+}
+
+.circles li:nth-child(8) {
+  left: 50%;
+  animation-delay: 15s;
+  animation-duration: 45s;
+  --size: 140px;
+}
+
+.circles li:nth-child(9) {
+  left: 20%;
+  animation-delay: 2s;
+  animation-duration: 35s;
+  --size: 110px;
+}
+
+.circles li:nth-child(10) {
+  left: 85%;
+  animation-delay: 0s;
+  animation-duration: 11s;
+  --size: 80px;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(1600px) rotate(720deg);
+    opacity: 0;
+  }
+}
