@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Loader from "../layout/Loader";
 import PageTitle from "../layout/PageTitle";
@@ -10,17 +10,15 @@ import {
   clearErrors,
   clearMessage,
   resetPassword,
-} from "../../features/user/forgotPasswordSlice";
+} from "../../features/forgotPassword/forgotPasswordSlice";
 
 import { EyeIcon, EyeSlashIcon, PasswordIcon } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const NewPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Reset password token
-  const { token } = useParams();
+  const location = useLocation();
 
   // Extract forgotPassword state from redux store
   const { email, loading, error, success } = useSelector(
@@ -58,12 +56,12 @@ const NewPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  // Dispatche resetPassword action to the Redux store
+  // Dispatch resetPassword action to the Redux store
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(
       resetPassword({
-        token: token,
+        path: location.pathname,
         passwords: { password, confirmPassword },
       })
     );

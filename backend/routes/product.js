@@ -27,11 +27,11 @@ router.route("/products").get(getProducts);
 router.route("/products/shop/:id").get(getShopProducts);
 router.route("/product/:id").get(calculateViews, getProductDetails);
 
-//Private routes
+//Review routes
 router.route("/review").put(isAuthenticatedUser, createProductReview);
 router
   .route("/reviews")
-  .get(isAuthenticatedUser, getProductReviews)
+  .get(getProductReviews)
   .delete(isAuthenticatedUser, deleteReview);
 
 // Seller routes

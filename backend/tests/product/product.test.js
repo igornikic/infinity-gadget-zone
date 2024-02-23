@@ -149,18 +149,15 @@ describe("POST /api/product/new", () => {
       .set("Accept", "application/json")
       .set("Cookie", [`shop_token=${sellerToken}`])
       .expect("Content-Type", /json/)
-      .expect(422)
+      .expect(400)
       .end((err, res) => {
         if (err) return done(err);
         // Assert that the response contains the error message
         expect(res.body).toHaveProperty("success", false);
         expect(res.body).toHaveProperty("error", {
-          statusCode: 422,
+          statusCode: 400,
         });
-        expect(res.body).toHaveProperty(
-          "message",
-          "Product validation failed: name: Please enter product name"
-        );
+        expect(res.body).toHaveProperty("message", "Please enter product name");
         done();
       });
   });

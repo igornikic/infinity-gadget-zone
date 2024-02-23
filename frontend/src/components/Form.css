@@ -1,13 +1,3 @@
-/* Layout styles */
-
-/* Authentication Form Styles */
-.background-authentication {
-  background-size: cover;
-  background-position: center;
-  padding: 20px 0;
-  width: 100%;
-}
-
 .form-style {
   display: flex;
   justify-content: center;
@@ -19,17 +9,19 @@
   color: var(--white);
 }
 
-/* changes in some forms  */
-.login-form,
-.update-password-form,
-.forgot-password-form,
-.new-password-form {
-  margin-top: -64px;
-}
-
 .form-icons {
   color: var(--white);
 }
+
+/* User auth background */
+.background-authentication {
+  background-size: cover;
+  background-position: center;
+  padding: 20px 0;
+  width: 100%;
+}
+
+/* Submit button */
 
 .submit-button {
   display: inline-block;
@@ -37,6 +29,7 @@
   border: 0;
   cursor: pointer;
   width: 100%;
+  margin-top: 12px;
   will-change: box-shadow, transform;
   background-color: var(--button-color);
   box-shadow: 0px 2px 4px rgba(45, 35, 66, 0.4),
@@ -61,8 +54,55 @@
   box-shadow: inset 0px 3px 7px var(--button-color);
 }
 
-/* Register Component Styles */
+/* Upload button */
 
+.product-input-upload,
+.shop-input-upload,
+.avatar-input-upload {
+  height: 100px;
+  color: transparent;
+  background-color: var(--white);
+  cursor: pointer;
+}
+
+.product-input-upload::before,
+.shop-input-upload::before,
+.avatar-input-upload::before {
+  color: grey;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.avatar-input-upload::before {
+  content: "Upload avatar";
+}
+
+.shop-input-upload::before {
+  content: "Upload store logo";
+}
+
+input::file-selector-button {
+  visibility: hidden;
+}
+
+/* Links Styles */
+
+#shop-forgot-password,
+#shop-register-new,
+#forgot-password {
+  color: var(--white);
+  font-weight: bold;
+  font-style: italic;
+}
+
+#shop-forgot-password:hover,
+#shop-register-new:hover,
+#forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Password Inputs */
 .password-input {
   position: relative;
 }
@@ -74,33 +114,16 @@
   cursor: pointer;
 }
 
-.input-upload {
-  height: 100px;
-  color: transparent;
-  background-color: var(--grey);
-}
-
-.input-upload::before {
-  content: "Upload avatar";
-  cursor: pointer;
-  color: grey;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
-
-input::file-selector-button {
-  visibility: hidden;
-}
-
 /* Wrappers */
 
+.logo-wrapper,
 .avatar-wrapper {
   display: inline-flex;
   justify-content: space-between;
   width: 100%;
 }
 
+.logo-wrapper div:first-of-type,
 .avatar-wrapper div:first-of-type {
   display: flex;
   justify-content: center;
@@ -114,6 +137,7 @@ input::file-selector-button {
 }
 
 /* Icon Styles */
+
 .bi-cloud-arrow-up-fill {
   display: flex;
   margin-top: -73px;
@@ -124,6 +148,22 @@ input::file-selector-button {
   pointer-events: none;
   animation: moveUpDown 2s infinite;
 }
+
+/* changes in some forms  */
+.shop-login,
+.login-form,
+.update-password-form,
+.forgot-password-form,
+.new-password-form {
+  margin-top: -64px;
+}
+
+/* infinity animation background */
+.background-padding {
+  padding: 20px 0;
+}
+
+/* Animations */
 
 @keyframes moveUpDown {
   0% {
@@ -137,40 +177,26 @@ input::file-selector-button {
   }
 }
 
-/* Login Component Styles */
-
-#forgot-password {
-  color: var(--white);
-  font-weight: bold;
-  font-style: italic;
-}
-
 /* Media Queries */
 
 @media only screen and (min-width: 1024.1px) {
   .background-authentication {
-    background-image: url("../../assets/auth-bg-2048x2048.webp");
+    background-image: url("../assets/auth-bg-2048x2048.webp");
   }
 }
 
 @media (min-width: 425.1px) and (max-width: 1024px) {
   .background-authentication {
-    background-image: url("../../assets/auth-bg-1024x1024.webp");
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .login-form,
-  .update-password-form {
-    margin-top: -128px;
+    background-image: url("../assets/auth-bg-1024x1024.webp");
   }
 }
 
 @media only screen and (max-width: 425px) {
   .background-authentication {
-    background-image: url("../../assets/auth-bg-512x512.webp");
+    background-image: url("../assets/auth-bg-512x512.webp");
   }
 
+  .logo-wrapper,
   .avatar-wrapper {
     display: flex;
     justify-content: center;

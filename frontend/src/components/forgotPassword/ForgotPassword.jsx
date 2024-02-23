@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import Loader from "../layout/Loader";
 import PageTitle from "../layout/PageTitle";
@@ -9,13 +10,17 @@ import {
   clearErrors,
   clearMessage,
   forgotPassword,
-} from "../../features/user/forgotPasswordSlice";
+} from "../../features/forgotPassword/forgotPasswordSlice";
 
 import { EmailIcon } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  // Extracts the current URL path
+  const currentLocation = location.pathname;
 
   // Extract forgotPassword state from redux store
   const { loading, message, error } = useSelector(
@@ -34,10 +39,10 @@ const ForgotPassword = () => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Dispatche forgotPassword action to the Redux store
+  // Dispatch forgotPassword action to the Redux store
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(forgotPassword(formData));
+    dispatch(forgotPassword({ path: currentLocation, email }));
   };
 
   return (

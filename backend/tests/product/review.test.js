@@ -45,7 +45,7 @@ describe("POST /api/review", () => {
       .send({
         rating: 4,
         comment: "Nice!",
-        productId: "64e736e4c8509ba9f32562ee",
+        productId: "658dad0fac4c8d58272469ea",
       })
       .set("Accept", "application/json")
       .set("Cookie", [`user_token=${userToken}`])
@@ -66,7 +66,7 @@ describe("POST /api/review", () => {
       .send({
         rating: 5,
         comment: "Super!",
-        productId: "64e736e4c8509ba9f32562ee",
+        productId: "658dad0fac4c8d58272469ea",
       })
       .set("Accept", "application/json")
       .set("Cookie", [`user_token=${userToken}`])
@@ -112,7 +112,7 @@ describe("DELETE /api/reviews?productId=&id=", () => {
   it("should delete user's review", (done) => {
     request(app)
       .delete(
-        "/api/reviews?productId=64e736e4c8509ba9f32562ee&id=64790344758eda847fa6895f"
+        "/api/reviews?productId=658dad0fac4c8d58272469ea&id=64790344758eda847fa6895f"
       )
       .set("Accept", "application/json")
       .set("Cookie", [`user_token=${userToken}`])
@@ -134,7 +134,7 @@ describe("DELETE /api/reviews?productId=&id=", () => {
   it("should return error if there is no review with this id", (done) => {
     request(app)
       .delete(
-        "/api/reviews?productId=64e736e4c8509ba9f32562ee&id=64b7eca4ba043a499902bd8f"
+        "/api/reviews?productId=658dad0fac4c8d58272469ea&id=64b7eca4ba043a499902bd8f"
       )
       .set("Accept", "application/json")
       .set("Cookie", [`user_token=${userToken}`])
@@ -155,7 +155,7 @@ describe("DELETE /api/reviews?productId=&id=", () => {
 describe("GET /api/reviews?id=", () => {
   it("should get all product reviews", (done) => {
     request(app)
-      .get("/api/reviews?id=64e736e4c8509ba9f32562ee")
+      .get("/api/reviews?id=658dad0fac4c8d58272469ea")
       .set("Accept", "application/json")
       .set("Cookie", [`user_token=${userToken}`])
       .expect("Content-Type", /json/)

@@ -1,4 +1,4 @@
-import Coupon from "../../models/couponModel.js";
+import User from "../../models/userModel.js";
 
 import request from "supertest";
 import app from "../../app.js";
@@ -10,10 +10,14 @@ import connectDatabase from "../../config/database.js";
 // Setting up config file
 dotenv.config({ path: "config/config.env" });
 
+// Variable to store token for user account
+let userToken;
 // Variable to store token for seller account
 let sellerToken;
 // Variable to store coupon id
 let couponId;
+// Variable to store test user acc info
+let testUser;
 
 // Constant that will represent 7d coupon validation
 const couponExparationDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
@@ -28,12 +32,30 @@ beforeAll(async () => {
     password: "reallygood!",
   });
   sellerToken = res.body.token;
+
+  testUser = await User.findById("64790344758eda847fa6895f");
 });
 
 // Disconnects from MongoDB database
 afterAll(async () => {
   await mongoose.connection.close();
 });
+
+// Function for increasing user coupon attempts count
+const addAttempts = async () => {
+  testUser.couponAttempt.count = 9;
+
+  await testUser.save();
+};
+
+// Function to expire user coupon attempts count
+const expireAttempts = async () => {
+  const expirationTime = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+  testUser.couponAttempt.expiry = expirationTime;
+
+  await testUser.save();
+};
 
 describe("POST /api/coupon/new", () => {
   it("should create new coupons", (done) => {
@@ -46,7 +68,7 @@ describe("POST /api/coupon/new", () => {
         discountValue: 20,
         numOfCoupons: 2,
         expirationDate: couponExparationDate,
-        products: ["64e736e4c8509ba9f32562ee"],
+        products: ["658dad0fac4c8d58272469ea"],
       })
       .set("Accept", "application/json")
       .set("Cookie", [`shop_token=${sellerToken}`])
@@ -78,7 +100,7 @@ describe("POST /api/coupon/new", () => {
         discountValue: 20,
         numOfCoupons: 2,
         expirationDate: couponExparationDate,
-        products: ["64e736e4c8509ba9f32562ee"],
+        products: ["658dad0fac4c8d58272469ea"],
       })
       .set("Accept", "application/json")
       .set("Cookie", [`shop_token=${sellerToken}`])
@@ -138,7 +160,7 @@ describe("POST /api/coupon/new", () => {
         discountValue: 1000,
         numOfCoupons: 2,
         expirationDate: couponExparationDate,
-        products: ["64e736e4c8509ba9f32562ee"],
+        products: ["658dad0fac4c8d58272469ea"],
       })
       .set("Accept", "application/json")
       .set("Cookie", [`shop_token=${sellerToken}`])
@@ -168,7 +190,7 @@ describe("POST /api/coupon/new", () => {
         discountValue: 1000,
         numOfCoupons: 2,
         expirationDate: couponExparationDate,
-        products: ["64e736e4c8509ba9f32562ee"],
+        products: ["658dad0fac4c8d58272469ea"],
       })
       .set("Accept", "application/json")
       .set("Cookie", [`shop_token=${sellerToken}`])
@@ -184,6 +206,127 @@ describe("POST /api/coupon/new", () => {
           "message",
           "Coupon validation failed: discountType: Please select correct discount type for this coupon, discountValue: Please enter valid discount value"
         );
+        done();
+      });
+  });
+});
+
+describe("GET /api/coupon/apply", () => {
+  it("should apply coupon to a product", async () => {
+    try {
+      // Authorize as test user
+      const loginRes = await request(app).post("/api/login").send({
+        email: process.env.USER_TEST_EMAIL,
+        password: "sickPassword!",
+      });
+
+      userToken = loginRes.body.token;
+
+      const couponRes = await request(app)
+        .get(
+          `/api/coupon/apply?productId=658dad0fac4c8d58272469ea&code=1234-5678-1234`
+        )
+        .set("Accept", "application/json")
+        .set("Cookie", [`user_token=${userToken}`])
+        .expect("Content-Type", /json/)
+        .expect(200);
+
+      // Assert that the response contains the success message
+      expect(couponRes.body).toHaveProperty("success", true);
+      // Assert that the response contains coupon's information
+      expect(couponRes.body).toHaveProperty("coupon");
+      expect(couponRes.body.coupon).toHaveProperty("name", "Summer discount");
+      expect(couponRes.body.coupon).toHaveProperty("code", "1234-5678-1234");
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it("should return error if coupon code is invalid", async () => {
+    try {
+      const attempt1 = await request(app)
+        .get(
+          `/api/coupon/apply?productId=658dad0fac4c8d58272469ea&code=1111-5555-1111`
+        )
+        .set("Accept", "application/json")
+        .set("Cookie", [`user_token=${userToken}`])
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      // Assert that the response contains the error message
+      expect(attempt1.body).toHaveProperty("success", false);
+      expect(attempt1.body).toHaveProperty("error", { statusCode: 400 });
+      expect(attempt1.body).toHaveProperty(
+        "message",
+        "Incorrect coupon code. Attempt 1/10"
+      );
+
+      await addAttempts();
+
+      const attempt10 = await request(app)
+        .get(
+          `/api/coupon/apply?productId=658dad0fac4c8d58272469ea&code=1111-5555-1111`
+        )
+        .set("Accept", "application/json")
+        .set("Cookie", [`user_token=${userToken}`])
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      // Assert that the response contains the error message
+      expect(attempt10.body).toHaveProperty("success", false);
+      expect(attempt10.body).toHaveProperty("error", { statusCode: 400 });
+      expect(attempt10.body).toHaveProperty(
+        "message",
+        "Incorrect coupon code. Attempt 10/10"
+      );
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it("should return error that coupon attempts are exceeded", (done) => {
+    request(app)
+      .get(
+        `/api/coupon/apply?productId=658dad0fac4c8d58272469ea&code=1111-5555-1111`
+      )
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the error message
+        expect(res.body).toHaveProperty("success", false);
+        expect(res.body).toHaveProperty("error", { statusCode: 400 });
+        expect(res.body).toHaveProperty(
+          "message",
+          "Exceeded maximum coupon attempts. Try again later."
+        );
+        done();
+      });
+  });
+
+  it("should reset attempt count to 0 if expiry time is before current time", (done) => {
+    expireAttempts();
+
+    request(app)
+      .get(
+        `/api/coupon/apply?productId=658dad0fac4c8d58272469ea&code=1234-5678-1234`
+      )
+      .set("Accept", "application/json")
+      .set("Cookie", [`user_token=${userToken}`])
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        // Assert that the response contains the success message
+        expect(res.body).toHaveProperty("success", true);
+        // Assert that the response contains coupon's information
+        expect(res.body).toHaveProperty("coupon");
+        expect(res.body.coupon).toHaveProperty("name", "Summer discount");
+        expect(res.body.coupon).toHaveProperty("code", "1234-5678-1234");
         done();
       });
   });

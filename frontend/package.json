@@ -8,14 +8,16 @@
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest run --coverage"
+    "test": "VITE_ENV=test vitest run --coverage"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-table": "^8.10.7",
     "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-phone-input-2": "^2.15.1",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.16.0",
     "redux-persist": "^6.0.0"

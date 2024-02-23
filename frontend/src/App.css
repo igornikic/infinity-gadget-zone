@@ -5,6 +5,8 @@
   padding: 0;
   margin: 0;
   font-family: Arial, sans-serif;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* remove blue highlignt */
+  -webkit-tap-highlight-color: transparent; /* For some Androids */
 }
 
 /* Global Variables */
@@ -13,24 +15,30 @@
   --white: #ffffff;
   --black: #000000;
   --grey: #dee1e2;
-  --light-grey: #f2f2f2;
+  --background-color: #0e6ba8;
+  --secondary-btn: #0e3ba8;
+  --unknown: #ff66d8;
   --input-hover-color: #ccc;
   --list-hover-color: #c5c5c5;
   --button-color: #ff6500;
   --dark-red: #b60000;
-  --dark-green: #00ff00;
+  --dark-green: #044f04;
 }
 
 /* Element styles */
 
 html {
-  overflow-y: scroll;
+  overflow-y: auto; /* maybe change to scroll*/
 }
 
 body,
 html {
   overflow-x: hidden;
   max-width: 100%;
+}
+
+#root {
+  position: relative;
 }
 
 /* Body styles */
@@ -63,6 +71,7 @@ h1 {
 
 /* Form Styles */
 form {
+  width: 70%;
   border: 1px solid;
   border-radius: 50px;
   padding: 20px;
@@ -86,6 +95,20 @@ label[for="avatar"] {
   display: block;
 }
 
+/* Select styles*/
+select {
+  display: block;
+  width: 100%;
+  font-size: 16px;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  border: 2px solid var(--grey);
+  color: rgb(14, 14, 16);
+  background: var(--white);
+  height: 36px;
+}
+
 /* Input Styles */
 input {
   display: block;
@@ -97,7 +120,7 @@ input {
   padding: 5px 30px;
   border: 2px solid var(--grey);
   color: rgb(14, 14, 16);
-  background: var(--grey);
+  background: var(--white);
   height: 36px;
 }
 
@@ -123,12 +146,20 @@ textarea {
 
 .rounded-circle {
   border-radius: 50%;
+  /* Ensure the image completely covers the box */
+  object-fit: cover;
+  object-position: center center;
 }
 
-.flex-center {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+/* Disabled attribute */
+[disabled] {
+  cursor: not-allowed;
+}
+
+.delete-icon {
+  display: inline-flex;
+  padding: 1px;
+  cursor: pointer;
 }
 
 .inline-flex {
@@ -148,15 +179,39 @@ textarea {
   display: none;
 }
 
+.green-color {
+  color: var(--dark-green);
+}
+
+.red-color {
+  color: var(--dark-red);
+}
+
 /* Media Queries */
 
 /* Tablet Screen - 768px */
 @media only screen and (max-width: 768px) {
+  form {
+    width: 100%;
+  }
   .inline-flex {
     display: block;
+    padding: 0 10px;
   }
   .inline-flex div {
     width: 100%;
-    margin: 10px 0;
+    margin: 0;
+    padding: 12px 0;
+  }
+
+  .inline-flex div:first-child {
+    margin: 0;
+  }
+}
+
+/* Mobile scren */
+@media only screen and (max-width: 425px) {
+  h1 {
+    font-size: 2rem;
   }
 }

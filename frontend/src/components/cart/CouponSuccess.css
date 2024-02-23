@@ -1,0 +1,38 @@
+.coupon-success {
+  padding: 20px 40px !important;
+}
+
+.coupon-success h1 {
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.coupon-success h2 {
+  display: inline-block;
+}
+
+.coupon-success p,
+.coupon-success span {
+  color: #666;
+  margin: 10px 0;
+}
+
+.coupon-success div {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-coupon-code {
+  color: var(--background-color);
+  display: inline;
+}
+
+.coupon-success .you-saved-button {
+  background-color: limegreen;
+  color: #fff;
+  font-weight: bold;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

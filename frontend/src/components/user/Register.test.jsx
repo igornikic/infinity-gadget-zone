@@ -157,7 +157,7 @@ describe("POST /register", () => {
     // Wait for the "Passwords do not match" message to appear
     await screen.findByText("Passwords do not match");
 
-    // Assert the success message is displayed
+    // Assert the error message is displayed
     expect(screen.getByText("Passwords do not match")).toBeInTheDocument();
 
     // Check state of auth slice in Redux store
@@ -168,9 +168,9 @@ describe("POST /register", () => {
     expect(authState.isAuthenticated).toBe(false);
     expect(authState.error).toBe("Passwords do not match");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store

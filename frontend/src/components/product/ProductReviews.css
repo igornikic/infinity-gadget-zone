@@ -1,0 +1,60 @@
+.review-inline {
+  display: inline-flex;
+  align-items: end;
+  justify-content: start;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.review-inline img {
+  margin-right: 10px;
+}
+
+.stars-container {
+  position: relative;
+  max-width: 160px;
+  height: 24px;
+}
+
+.empty-stars {
+  position: absolute;
+  z-index: 0;
+}
+
+.bi-star-fill {
+  z-index: 1;
+  overflow: visible;
+}
+
+/* Adjust width based on the rating */
+.stars {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.stars svg {
+  margin-right: 10px;
+}
+
+.rating {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Word wrap for long comments */
+.text-break {
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 50%;
+  margin-bottom: 10px;
+}
+
+/* Horizontal rule */
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+  margin: 1rem 0;
+}

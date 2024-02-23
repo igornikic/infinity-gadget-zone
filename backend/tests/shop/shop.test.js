@@ -258,10 +258,7 @@ describe("POST /api/shop/new", () => {
         expect(res.body).toHaveProperty("error", {
           statusCode: 400,
         });
-        expect(res.body).toHaveProperty(
-          "message",
-          "ValidationError: shopName: Please enter shop name"
-        );
+        expect(res.body).toHaveProperty("message", "Please enter shop name");
 
         done();
       });

@@ -11,6 +11,10 @@ import { search, filter, pagination } from "../utils/queryFeatures.js";
 export const newProduct = catchAsyncErrors(async (req, res, next) => {
   const shop = await Shop.findById(req.shop.id);
 
+  if (!shop) {
+    return next(new ErrorHandler("Shop not found", 404));
+  }
+
   // Get array of images from req body
   const images = req.body.images;
   // Variable to store Cloudinary image links
@@ -30,7 +34,8 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
 
   // Replace images in req body with uploaded image links and set shop
   req.body.images = imagesLinks;
-  req.body.shop = req.shop.id;
+  req.body.shopId = shop._id;
+  req.body.shopName = shop.shopName;
 
   try {
     const product = await Product.create(req.body);
@@ -44,7 +49,13 @@ export const newProduct = catchAsyncErrors(async (req, res, next) => {
     imagesLinks.forEach(async (image) => {
       await cloudinary.uploader.destroy(image.public_id);
     });
-    return next(error);
+
+    // Extract error messages from all fields
+    const errorMessages = Object.values(error.errors)
+      .map((err) => err.message)
+      .join("\n");
+
+    return next(new ErrorHandler(errorMessages, 400));
   }
 });
 
@@ -82,12 +93,12 @@ export const getProducts = catchAsyncErrors(async (req, res, next) => {
 export const getShopProducts = catchAsyncErrors(async (req, res, next) => {
   const resPerPage = 20;
 
-  const shop = await Shop.findById(req.params.id);
-  if (!shop) {
+  const shopId = await Shop.findById(req.params.id);
+  if (!shopId) {
     return next(new ErrorHandler("Shop not found", 404));
   }
 
-  let query = Product.find({ shop });
+  let query = Product.find({ shopId });
 
   // Apply search, filter, and pagination features
   query = search(query, req.query);
@@ -128,13 +139,15 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
 // @route   PUT /api/review
 // @access  Private
 export const createProductReview = catchAsyncErrors(async (req, res, next) => {
-  const { rating, comment, productId } = req.body;
+  const { rating, comment, productId, date } = req.body;
 
   const review = {
     user: req.user._id,
     username: req.user.username,
+    avatar: req.user.avatar,
     rating: Number(rating),
     comment,
+    date,
   };
 
   const product = await Product.findById(productId);
@@ -146,14 +159,19 @@ export const createProductReview = catchAsyncErrors(async (req, res, next) => {
   }
 
   // Check if user has already reviewed this product
-  const existingReviewIndex = product.reviews.findIndex(
+  const isReviewed = product.reviews.find(
     (review) => review.user.toString() === req.user._id.toString()
   );
 
-  if (existingReviewIndex !== -1) {
+  if (isReviewed) {
     // Update existing review
-    product.reviews[existingReviewIndex].comment = comment;
-    product.reviews[existingReviewIndex].rating = rating;
+    product.reviews.forEach((review) => {
+      if (review.user.toString() === req.user._id.toString()) {
+        review.comment = comment;
+        review.rating = rating;
+        review.date = date;
+      }
+    });
   } else {
     product.reviews.push(review);
     product.numOfReviews = product.reviews.length;
@@ -270,7 +288,7 @@ export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 
   // Only admins or authorized shop owner can delete this product.
   if (
-    (req.shop && req.shop.id && req.shop.id !== product.shop.toString()) ||
+    (req.shop && req.shop.id && req.shop.id !== product.shopId.toString()) ||
     (req.user && req.user.role !== "admin")
   ) {
     return next(

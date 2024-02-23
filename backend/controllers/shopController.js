@@ -65,7 +65,11 @@ export const newShop = catchAsyncErrors(async (req, res, next) => {
     } else if (error.code === 11000 && error.keyPattern.shopEmail) {
       return next(new ErrorHandler("Shop email already taken", 409));
     } else {
-      return next(new ErrorHandler(error, 400));
+      // Extract error messages from all fields
+      const errorMessages = Object.values(error.errors)
+        .map((err) => err.message)
+        .join("\n");
+      return next(new ErrorHandler(errorMessages, 400));
     }
   }
 });

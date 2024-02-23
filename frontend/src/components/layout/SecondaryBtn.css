@@ -1,0 +1,20 @@
+.secondary-btn {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding: 10px 25px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  color: var(--white);
+  font-weight: bolder;
+  background-color: var(--secondary-btn);
+  text-decoration: none;
+  font-family: "Open Sans", "Arial", sans-serif;
+}
+
+.secondary-btn:hover {
+  background-color: var(--secondary-btn);
+  opacity: 0.85;
+  transition-duration: 0.5s;
+}

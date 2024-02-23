@@ -14,15 +14,7 @@
   text-align: center;
   min-height: 40px;
   min-width: 58%;
-}
-
-.alert svg {
-  position: absolute;
-  left: 2%;
-}
-
-.alert h3 {
-  width: 90%;
+  padding: 2px 0;
 }
 
 .alert-error {

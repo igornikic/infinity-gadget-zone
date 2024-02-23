@@ -22,8 +22,9 @@ const Alert = ({ message, clear, type }) => {
     if (message) {
       setAlertMessage(message);
 
-      // Set a timeout to clear alert message after 5 seconds
-      timeout = setTimeout(clearAlert, 5000);
+      // Set a timeout to clear alert message
+      const timeoutDuration = import.meta.env.VITE_ENV === "test" ? 500 : 5000;
+      timeout = setTimeout(clearAlert, timeoutDuration);
     }
 
     // Clean up timeout when component unmounts or when alert message changes
@@ -35,7 +36,9 @@ const Alert = ({ message, clear, type }) => {
   return alertMessage ? (
     <div className={`alert show alert-${type}`} role="alert">
       {type === "error" ? <ErrorIcon /> : <SuccessIcon />}
-      <h3>{alertMessage}</h3>
+      <h3>
+        <pre>{alertMessage}</pre>
+      </h3>
     </div>
   ) : null;
 };

@@ -41,8 +41,8 @@ beforeAll(async () => {
     discountValue: 20,
     numOfCoupons: 4,
     expirationDate: couponExparationDate,
-    products: ["64e736e4c8509ba9f32562ee"],
-    shop: "64d194ec5fb1cfaede33629b",
+    products: ["658dad0fac4c8d58272469ea"],
+    shopId: "64d194ec5fb1cfaede33629b",
   });
 
   insertedCoupon2 = await Coupon.create({
@@ -52,8 +52,8 @@ beforeAll(async () => {
     discountValue: 10,
     numOfCoupons: 1,
     expirationDate: couponExparationDate,
-    products: ["64e736e4c8509ba9f32562ee"],
-    shop: "64d194ec5fb1cfaede33629b",
+    products: ["658dad0fac4c8d58272469ea"],
+    shopId: "64d194ec5fb1cfaede33629b",
   });
 });
 
@@ -78,28 +78,20 @@ describe("POST /api/order/new", () => {
       .send({
         orderItems: [
           {
-            name: "Test Product",
-            price: 1000,
+            name: "Test Product 1",
+            price: 22.99,
             quantity: 3,
             image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
-            product: "64e736e4c8509ba9f32562ee",
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1703783693/IGZproducts/c6fd9e7p9unuo4awg9bq.jpg",
+            product: "658dad0fac4c8d58272469ea",
           },
           {
-            name: "SomethingElse34",
-            price: 22.99,
+            name: "Test Product 2",
+            price: 49.99,
             quantity: 1,
             image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1693248321/IGZproducts/qfvlzzxlkwi6d5gq4am1.png",
-            product: "64eceb42ea4a92dcd7c05c59",
-          },
-          {
-            name: "Test Product",
-            price: 1000,
-            quantity: 1,
-            image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
-            product: "64e736e4c8509ba9f32562ee",
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1703783728/IGZproducts/svjjp7rjvosx5o0bdess.jpg",
+            product: "658dad33ac4c8d58272469f0",
           },
         ],
         shippingInfo: {
@@ -134,12 +126,12 @@ describe("POST /api/order/new", () => {
       .send({
         orderItems: [
           {
-            name: "Test Product",
-            price: 1000,
+            name: "Test Product 1",
+            price: 22.99,
             quantity: 3,
             image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
-            product: "64e736e4c8509ba9f32562ee",
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1703783693/IGZproducts/c6fd9e7p9unuo4awg9bq.jpg",
+            product: "658dad0fac4c8d58272469ea",
             couponCode: "1234-1234-1234",
           },
         ],
@@ -175,12 +167,12 @@ describe("POST /api/order/new", () => {
       .send({
         orderItems: [
           {
-            name: "Test Product",
-            price: 1000,
+            name: "Test Product 1",
+            price: 22.99,
             quantity: 3,
             image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
-            product: "64e736e4c8509ba9f32562ee",
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1703783693/IGZproducts/c6fd9e7p9unuo4awg9bq.jpg",
+            product: "658dad0fac4c8d58272469ea",
             couponCode: "0123-0123-0123",
           },
         ],
@@ -219,12 +211,12 @@ describe("POST /api/order/new", () => {
       .send({
         orderItems: [
           {
-            name: "Test Product",
-            price: 1000,
+            name: "Test Product 1",
+            price: 22.99,
             quantity: 3,
             image:
-              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1692717898/IGZproducts/jsrq44qukmsisldpzu9a.jpg",
-            product: "64e736e4c8509ba9f32562ee",
+              "https://res.cloudinary.com/dsqjoidmi/image/upload/v1703783693/IGZproducts/c6fd9e7p9unuo4awg9bq.jpg",
+            product: "658dad0fac4c8d58272469ea",
             couponCode: "1234-5678-0000",
           },
         ],

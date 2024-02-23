@@ -1,0 +1,42 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pagination-order {
+  display: flex;
+}
+
+.pagination button {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination button:not(.secondary-btn) {
+  background-color: var(--white);
+}
+
+.pagination button:disabled:not(.secondary-btn) {
+  cursor: default;
+  color: #595959;
+  font-weight: bold;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  /* Ensure that 2nd component is in the first row */
+  .pagination-order:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    order: -1;
+    width: 100%;
+  }
+
+  .pagination-order:nth-child(3),
+  .pagination-order:nth-child(1) {
+    color: purple;
+  }
+}

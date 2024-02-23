@@ -12,7 +12,7 @@ const initialState = {
 // Forgot password
 export const forgotPassword = createAsyncThunk(
   "forgotPassword/forgotPassword",
-  async ({ email }, { rejectWithValue }) => {
+  async ({ path, email }, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
@@ -20,14 +20,16 @@ export const forgotPassword = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.post(
-        `/api/password/forgot`,
-        { email },
-        config
-      );
+      const isShopPasswordForgot = path === "/shop/password/forgot";
+
+      const requestData = isShopPasswordForgot
+        ? { shopEmail: email }
+        : { email };
+
+      const { data } = await axios.post(`/api${path}`, requestData, config);
 
       return {
-        email,
+        email: requestData.shopEmail || requestData.email,
         message: data.message,
       };
     } catch (error) {
@@ -39,7 +41,7 @@ export const forgotPassword = createAsyncThunk(
 // Reset password
 export const resetPassword = createAsyncThunk(
   "forgotPassword/resetPassword",
-  async ({ token, passwords }, { rejectWithValue }) => {
+  async ({ path, passwords }, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
@@ -47,11 +49,7 @@ export const resetPassword = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.put(
-        `/api/password/reset/${token}`,
-        passwords,
-        config
-      );
+      const { data } = await axios.put(`/api${path}`, passwords, config);
 
       return data.success;
     } catch (error) {

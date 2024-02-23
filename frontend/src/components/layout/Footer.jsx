@@ -48,14 +48,14 @@ const Footer = () => {
         {/* Company */}
         <div className="footer-column">
           <div>
-            <Link to="#">
-              <p>Contact Us</p>
-            </Link>
+            <p>
+              <Link to="#">Contact Us</Link>
+            </p>
           </div>
           <div>
-            <Link to="#">
-              <p>About Us</p>
-            </Link>
+            <p>
+              <Link to="#">About Us</Link>
+            </p>
           </div>
         </div>
         {/* Social media icons */}

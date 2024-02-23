@@ -83,12 +83,23 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      avatar: {
+        public_id: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+      },
       rating: {
         type: Number,
         required: true,
       },
       comment: {
         type: String,
+        maxLength: 1000,
       },
       date: {
         type: Date,
@@ -96,9 +107,13 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
-  shop: {
+  shopId: {
     type: mongoose.Schema.ObjectId,
     ref: "Shop",
+    required: true,
+  },
+  shopName: {
+    type: String,
     required: true,
   },
   sold: {

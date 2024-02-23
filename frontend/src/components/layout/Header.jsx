@@ -8,8 +8,12 @@ import Search from "./Search";
 import {
   googleLogin,
   logout,
-  clearErrors,
+  clearErrors as clearUserErrors,
 } from "../../features/user/authSlice";
+import {
+  logoutShop,
+  clearErrors as clearShopErrors,
+} from "../../features/shop/shopAuthSlice";
 
 import logo from "../../assets/logo-52x48.webp";
 import {
@@ -28,36 +32,49 @@ const Header = () => {
   const dispatch = useDispatch();
 
   // Extract auth state from redux store
-  const { user, isAuthenticated, loading, error } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    user,
+    isAuthenticated,
+    error: userError,
+  } = useSelector((state) => state.auth);
+  // Extract shopAuth state from redux store
+  const {
+    shop,
+    isSeller,
+    error: shopError,
+  } = useSelector((state) => state.shopAuth);
+  // Extract cart state from redux store
+  const { cartItems } = useSelector((state) => state.cart);
 
-  const [isNavVisible, setNavVisible] = useState(true);
+  const [isNavVisible, setIsNavVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
+
+  // Check is object empty
+  const isNotEmpty = (obj) => {
+    return obj !== null && Object.entries(obj).length !== 0;
+  };
 
   // Toggle dropdown onClick
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  // Toggle nav visibility for smaller devices
-  const toggleNav = () => {
-    setNavVisible(!isNavVisible);
-  };
-
-  // Dispatche logout action to the Redux store
+  // Dispatch logout action to the Redux store
   const logoutHandler = () => {
-    dispatch(logout());
+    const logoutAction = isAuthenticated ? logout() : logoutShop();
+
+    dispatch(logoutAction);
+
     setIsLogout(true);
     setTimeout(() => {
       setIsLogout(false);
-    }, 5000);
+    }, 3000);
   };
 
   useEffect(() => {
     // Show google one-tap login option if user is not authenticated
-    if (!isAuthenticated && window.google) {
+    if (window.google && !isAuthenticated && !isSeller) {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
         auto_select: false,
@@ -72,8 +89,10 @@ const Header = () => {
         },
       });
       window.google.accounts.id.prompt();
+    } else if (window.google) {
+      window.google.accounts.id.cancel();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isSeller]);
 
   useEffect(() => {
     // Close dropdown if we click outside of it's content
@@ -90,10 +109,32 @@ const Header = () => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      // Always visible for desktop devices
+      setIsNavVisible(window.innerWidth > 768);
+    };
+
+    // Attach resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <header>
-      {/* Display error message if there is an error */}
-      {error && <Alert message={error} clear={clearErrors} type={"error"} />}
+      {/* Display error message if there is an error in the user slice */}
+      {userError && (
+        <Alert message={userError} clear={clearUserErrors} type={"error"} />
+      )}
+
+      {/* Display error message if there is an error in the shopAuth slice */}
+      {shopError && (
+        <Alert message={shopError} clear={clearShopErrors} type={"error"} />
+      )}
 
       {/* Display success message upon successful logout  */}
       {isLogout && (
@@ -121,7 +162,9 @@ const Header = () => {
             className="hamburger-icon"
             id="icon"
             data-testid="hamburger-icon"
-            onClick={toggleNav}
+            onClick={() => {
+              setIsNavVisible(!isNavVisible);
+            }}
           >
             <div className={`icon-1 ${isNavVisible ? "a" : ""}`} id="a"></div>
             <div className={`icon-2 ${isNavVisible ? "c" : ""}`} id="b"></div>
@@ -130,14 +173,17 @@ const Header = () => {
         </div>
 
         {/* Navbar links for smaller devices */}
-        <div className={`flex-center ${isNavVisible ? "show-nav" : ""}`}>
+        <div
+          className={`flex-center ${isNavVisible ? "show-nav" : "hide-nav"}`}
+        >
           {/* Profile dropdown */}
           <div
             className="avatar dropdown"
             title="Profile"
             onClick={toggleDropdown}
           >
-            {user !== null && Object.keys(user).length !== 0 ? (
+            {/* Show user dropdown if user object is present */}
+            {isNotEmpty(user) && (
               <>
                 {/* User avatar image */}
                 <img
@@ -149,17 +195,16 @@ const Header = () => {
                 />
                 {isOpen && (
                   <ul className="dropdown-menu">
-                    {user &&
-                      (user.role === "admin" || user.role === "seller") && (
-                        <li>
-                          {/* Dashboard link */}
-                          <Link to="#">
-                            <pre>
-                              <DashboardIcon /> Dashboard
-                            </pre>
-                          </Link>
-                        </li>
-                      )}
+                    {user && user.role === "admin" && (
+                      <li>
+                        {/* Dashboard link */}
+                        <Link to="#">
+                          <pre>
+                            <DashboardIcon /> Dashboard
+                          </pre>
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       {/* Profile link */}
                       <Link to="/me">
@@ -179,7 +224,50 @@ const Header = () => {
                   </ul>
                 )}
               </>
-            ) : (
+            )}
+            {/* Show shop dropdown if shop object is present */}
+            {isNotEmpty(shop) && (
+              <>
+                {/* Shop logo image */}
+                <img
+                  src={shop && shop.logo.url}
+                  width="24px"
+                  height="24px"
+                  alt="Shop logo"
+                  className="rounded-circle"
+                />
+                {isOpen && (
+                  <ul className="dropdown-menu">
+                    <li>
+                      {/* Dashboard link */}
+                      <Link to="#">
+                        <pre>
+                          <DashboardIcon /> Dashboard
+                        </pre>
+                      </Link>
+                    </li>
+                    <li>
+                      {/* Profile link */}
+                      <Link to="/me">
+                        <pre>
+                          <ProfileIcon /> Profile
+                        </pre>
+                      </Link>
+                    </li>
+                    <li>
+                      {/* Logout */}
+                      <Link to="/" onClick={logoutHandler}>
+                        <pre>
+                          <LogoutIcon /> Logout
+                        </pre>
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </>
+            )}
+            {/* Show register and login options if user and shop are both empty */}
+            {!isNotEmpty(user) && !isNotEmpty(shop) && (
               <>
                 <AvatarIcon className="dropdown-toggle" />
                 {isOpen && (
@@ -210,9 +298,9 @@ const Header = () => {
             <OrderIcon />
           </Link>
           {/* Cart link */}
-          <Link to="#" className="cart" title="Cart">
+          <Link to="/cart" className="cart" title="Cart">
             <CartIcon />
-            <span className="cart-count">1</span>
+            <span className="cart-count">{cartItems.length}</span>
           </Link>
         </div>
       </nav>

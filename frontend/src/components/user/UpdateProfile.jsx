@@ -13,7 +13,7 @@ import {
 } from "../../features/user/userSlice";
 
 import { EmailIcon, UploadFileIcon, UserIcon } from "../../icons/FormIcons";
-import "./user.css";
+import "../Form.css";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -23,13 +23,15 @@ const UpdateProfile = () => {
   const { error, isUpdated, loading } = useSelector((state) => state.user);
 
   // Define the initial state for form data
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     username: user.username,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     avatar: user.avatar.url,
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   // Destructure the form data for easier access
   const { username, firstName, lastName, email, avatar } = formData;
@@ -53,11 +55,14 @@ const UpdateProfile = () => {
     }
   };
 
-  // Dispatche updateProfile and loadUser actions to the Redux store
+  // Dispatch updateProfile and loadUser actions to the Redux store
   const onSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(updateProfile(formData));
-    await dispatch(loadUser());
+    // Check if profile data has been modified
+    if (JSON.stringify(initialFormData) !== JSON.stringify(formData)) {
+      await dispatch(updateProfile(formData));
+      await dispatch(loadUser());
+    }
   };
 
   return (
@@ -162,7 +167,7 @@ const UpdateProfile = () => {
                     type="file"
                     id="update-avatar"
                     name="avatar"
-                    className="input-upload"
+                    className="avatar-input-upload"
                     accept="images/*"
                     onChange={onChange}
                   />
