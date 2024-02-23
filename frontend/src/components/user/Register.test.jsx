@@ -168,9 +168,9 @@ describe("POST /register", () => {
     expect(authState.isAuthenticated).toBe(false);
     expect(authState.error).toBe("Passwords do not match");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store

@@ -114,9 +114,9 @@ describe("POST /shop/login", () => {
     expect(shopAuthState.message).toBe("");
     expect(shopAuthState.error).toBe("Invalid Email or Password");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of shopAuth slice in Redux store

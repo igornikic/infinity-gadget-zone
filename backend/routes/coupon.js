@@ -2,6 +2,7 @@ import express from "express";
 
 import {
   newCoupon,
+  applyCoupon,
   getShopCoupons,
   getCouponDetails,
   deleteCoupon,
@@ -9,7 +10,13 @@ import {
 
 const router = express.Router();
 
-import { isAuthenticatedSeller } from "../middlewares/auth.js";
+import {
+  isAuthenticatedUser,
+  isAuthenticatedSeller,
+} from "../middlewares/auth.js";
+
+// Private routes
+router.route("/coupon/apply").get(isAuthenticatedUser, applyCoupon);
 
 // Seller routes
 router.route("/coupon/new").post(isAuthenticatedSeller, newCoupon);

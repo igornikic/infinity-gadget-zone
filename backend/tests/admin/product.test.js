@@ -43,7 +43,7 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-const productForDelete = async (shopId) => {
+const productForDelete = async (shopId, shopName) => {
   // Upload product image to Cloudinary
   const result = await cloudinary.uploader.upload(testProduct, {
     folder: "IGZproducts",
@@ -59,13 +59,18 @@ const productForDelete = async (shopId) => {
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     ratings: 4,
     category: "Sports & Outdoors",
-    shop: shopId,
+    shopId: shopId,
+    shopName: shopName,
     stock: 1,
     numOfReviews: 1,
     reviews: [
       {
         user: "64790344758eda847fa6895f",
         username: "TestUser",
+        avatar: {
+          public_id: "IGZavatars/rwhi3tufecxhc2rscimx",
+          url: "https://res.cloudinary.com/dsqjoidmi/image/upload/v1689798283/IGZavatars/rwhi3tufecxhc2rscimx.png",
+        },
         rating: 4,
         comment: "Nice!",
       },
@@ -84,7 +89,7 @@ const productForDelete = async (shopId) => {
 describe("DELETE /api/shop/product/:id", () => {
   it("should delete product from database", async () => {
     try {
-      await productForDelete("64d194ec5fb1cfaede33629b");
+      await productForDelete("64d194ec5fb1cfaede33629b", "Test Shop4");
 
       // Authorize as Seller
       const loginRes = await request(app).post("/api/shop/login").send({
@@ -135,7 +140,7 @@ describe("DELETE /api/shop/product/:id", () => {
 
   it("should return error if you are not authorized to delete this product", async () => {
     try {
-      await productForDelete("64d194ec5fb1cfaede33629c");
+      await productForDelete("64d194ec5fb1cfaede33629c", "Test Shop4");
 
       const deleteRes = await request(app)
         .delete(`/api/shop/product/${productId}`)

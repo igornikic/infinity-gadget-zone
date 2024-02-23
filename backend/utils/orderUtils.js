@@ -104,7 +104,7 @@ const groupOrderItemsBySeller = async (orderItems) => {
       throw new ErrorHandler("Product not found", 404);
     }
 
-    const shopId = product.shop.toString();
+    const shopId = product.shopId.toString();
 
     // Check if the seller group already exists in array
     const existingSellerGroup = sellerOrderGroups.find(

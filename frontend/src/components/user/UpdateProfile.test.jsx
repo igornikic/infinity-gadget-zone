@@ -66,9 +66,9 @@ describe("PUT /me/update", () => {
     expect(userState.isDeleted).toBe(false);
     expect(userState.error).toBe(null);
 
-    // Wait 5s for isUpdated to be cleared
+    // Wait 500ms for isUpdated to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of user slice in Redux store
@@ -141,9 +141,9 @@ describe("PUT /me/update", () => {
       "Validation failed: firstName: Your first name must be at least 3 characters long"
     );
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of user slice in Redux store

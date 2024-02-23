@@ -57,7 +57,7 @@ const couponSchema = new mongoose.Schema({
       message: "Expiration date must be in the future",
     },
   },
-  shop: {
+  shopId: {
     type: mongoose.Schema.ObjectId,
     ref: "Shop",
     required: true,

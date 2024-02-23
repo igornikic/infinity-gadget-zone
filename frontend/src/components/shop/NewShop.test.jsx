@@ -64,6 +64,11 @@ describe("POST /shop/new", () => {
     const submitButton = screen.getByRole("button", { name: "Create Store" });
     fireEvent.submit(submitButton);
 
+    // Wait for loading to end
+    await act(async () => {
+      store.getState().shopAuth.loading === false;
+    });
+
     // Wait for the "Email sent to: emailAddress" message to appear
     await waitFor(() => {
       expect(
@@ -80,9 +85,9 @@ describe("POST /shop/new", () => {
     expect(shopAuthState.message).toBe(`Email sent to: ${std.shopEmail}`);
     expect(shopAuthState.error).toBe(null);
 
-    // Wait 5s for success message to be cleared
+    // Wait 500ms for success message to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store
@@ -137,6 +142,10 @@ describe("POST /shop/new", () => {
     const submitButton = screen.getByRole("button", { name: "Create Store" });
     fireEvent.submit(submitButton);
 
+    // Wait for loading to end
+    await act(async () => {
+      store.getState().shopAuth.loading === false;
+    });
     // Wait for the "Passwords do not match" message to appear
     await waitFor(() => {
       expect(screen.getByText("Passwords do not match")).toBeInTheDocument();
@@ -151,9 +160,9 @@ describe("POST /shop/new", () => {
     expect(shopAuthState.message).toBe("");
     expect(shopAuthState.error).toBe("Passwords do not match");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store

@@ -14,7 +14,7 @@ import {
 
 import { categories } from "../../constants/categories";
 import { UploadFileIcon } from "../../icons/FormIcons";
-import "./product.css";
+import "../layout/Modal.css";
 import "../Form.css";
 import "../Carousel.css";
 
@@ -80,9 +80,15 @@ const NewProduct = () => {
 
   // Function to remove an image from the array
   const removeImage = (index) => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
+    const updatedImages = images.filter((_, i) => i !== index);
     setFormData({ ...formData, images: updatedImages });
+
+    // If removed image was the last one, update checkedIndex
+    if (index === checkedIndex && updatedImages.length > 0) {
+      const newCheckedIndex =
+        index === updatedImages.length ? index - 1 : index;
+      setCheckedIndex(newCheckedIndex);
+    }
   };
 
   // Dispatch newProduct action to the Redux store
@@ -214,8 +220,8 @@ const NewProduct = () => {
                         name="carousel"
                         aria-hidden="true"
                         hidden=""
-                        defaultChecked={index === 0 && "checked"}
-                        onClick={() => setCheckedIndex(index)}
+                        checked={checkedIndex === index && "checked"}
+                        onChange={() => setCheckedIndex(index)}
                       />
                       {/* Remove image button */}
                       <div className="carousel-item">
@@ -229,28 +235,32 @@ const NewProduct = () => {
                         </button>
                       </div>
                       {/* Carousel control buttons */}
-                      <label
-                        htmlFor={`carousel-${
-                          index === 0 ? images.length - 1 : index - 1
-                        }`}
-                        className={`carousel-control prev control-${index}`}
-                        style={{
-                          display: checkedIndex === index && "block",
-                        }}
-                      >
-                        ‹
-                      </label>
-                      <label
-                        htmlFor={`carousel-${
-                          index === images.length - 1 ? 0 : index + 1
-                        }`}
-                        className={`carousel-control next control-${index}`}
-                        style={{
-                          display: checkedIndex === index && "block",
-                        }}
-                      >
-                        ›
-                      </label>
+                      {images.length > 1 && (
+                        <>
+                          <label
+                            htmlFor={`carousel-${
+                              index === 0 ? images.length - 1 : index - 1
+                            }`}
+                            className={`carousel-control prev control-${index}`}
+                            style={{
+                              display: checkedIndex === index && "block",
+                            }}
+                          >
+                            ‹
+                          </label>
+                          <label
+                            htmlFor={`carousel-${
+                              index === images.length - 1 ? 0 : index + 1
+                            }`}
+                            className={`carousel-control next control-${index}`}
+                            style={{
+                              display: checkedIndex === index && "block",
+                            }}
+                          >
+                            ›
+                          </label>
+                        </>
+                      )}
                     </div>
                   ))}
               </div>
@@ -263,6 +273,7 @@ const NewProduct = () => {
                 className="product-input-upload"
                 accept="images/*"
                 onChange={onChange}
+                title={`${images.length} images uploaded`}
                 multiple
                 required
               />

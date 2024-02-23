@@ -1,0 +1,21 @@
+.product-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.price-filter label {
+  color: var(--black);
+}
+
+.price-filter input {
+  width: initial;
+}
+
+label[for="filter-category"],
+label[for="sort"] {
+  color: black;
+}

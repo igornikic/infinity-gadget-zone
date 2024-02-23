@@ -56,11 +56,17 @@ nav {
 
 .flex-center {
   opacity: 0;
-  display: none;
-  transition: all 600ms ease-out;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  transition: all 600ms ease-in-out;
   transition-delay: 100ms;
   flex: 0.3;
   width: 100% !important;
+}
+
+.hide-nav {
+  pointer-events: none;
 }
 
 .flex-center > * {
@@ -131,12 +137,14 @@ nav {
 .hamburger-icon {
   position: absolute;
   right: 5%;
-  bottom: 0;
+  top: 50%;
+  transform: translateY(-50%);
   height: 60px;
   width: 35px;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s ease-in-out;
+  height: 35px;
 }
 
 .icon-1.a {
@@ -198,6 +206,7 @@ nav {
 }
 
 .dropdown-menu {
+  display: block !important;
   position: absolute;
   top: 100%;
   left: 0;
@@ -215,10 +224,6 @@ nav {
   padding: 10px;
   color: #333333;
   text-decoration: none;
-}
-
-.dropdown-menu {
-  display: block;
 }
 
 /* Media Queries */
@@ -239,6 +244,15 @@ nav {
   nav {
     display: block;
     background-color: unset;
+  }
+  nav .search {
+    width: 40%;
+    left: 45%;
+  }
+
+  .logo {
+    display: inline-block;
+    margin-top: -5px;
   }
 }
 

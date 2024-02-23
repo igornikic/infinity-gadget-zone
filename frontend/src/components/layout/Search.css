@@ -1,4 +1,13 @@
 /* Input styles  */
+input[type="search"] {
+  text-align: left;
+  padding-left: 15px;
+}
+
+input[type="search"]::placeholder {
+  text-align: left;
+}
+
 input[type="search"]::-webkit-search-cancel-button {
   filter: grayscale(100%);
   -webkit-filter: grayscale(100%);
@@ -30,13 +39,47 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .search-button {
   position: absolute;
-  display: block;
   right: 0;
-  top: 10%;
-  padding-right: 10px;
-  border: none;
+  top: 0%;
+  padding: 0 5px;
+  height: 36px;
   cursor: pointer;
-  background: transparent;
+}
+
+/* Voice search stlyles */
+
+.voice-search-button {
+  position: absolute;
+  right: -36px;
+  top: 0;
+  cursor: pointer;
+  height: 36px;
+}
+
+.voice-modal-overlay {
+  position: fixed;
+  top: 400%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: 200px;
+  height: 200px;
+  background: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  cursor: default;
+}
+
+.voice-modal-content {
+  position: relative;
+  background: #fff;
+  margin: 0 10px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .removed > * {
@@ -48,6 +91,12 @@ input[type="search"]::-webkit-search-cancel-button {
   content: none;
   width: 0;
   height: 0;
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    left: 65%;
+  }
 }
 
 @media only screen and (max-width: 319.9px) {

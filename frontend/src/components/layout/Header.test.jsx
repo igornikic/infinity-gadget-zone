@@ -2,13 +2,7 @@ import React from "react";
 import { rest } from "msw";
 
 import Header from "./Header";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from "../utils/test-utils.jsx";
+import { render, screen, fireEvent, act } from "../utils/test-utils.jsx";
 import { server } from "../../mocks/server.js";
 import { userTestData as utd } from "../../test-data/user/userTestData.js";
 import { shopTestData as std } from "../../test-data/shop/shopTestData.js";
@@ -102,9 +96,9 @@ describe("GET /logout", () => {
     expect(authState.isAuthenticated).toBe(true);
     expect(authState.error).toBe("Logout failed");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store
@@ -182,9 +176,9 @@ describe("GET /shop/logout", () => {
     expect(shopAuthState.message).toBe("");
     expect(shopAuthState.error).toBe("Logout failed");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of auth slice in Redux store
@@ -204,7 +198,10 @@ describe("Header component tests", () => {
     fireEvent.click(avatar);
 
     // Simulate search click
-    const submitButton = screen.getByRole("button", { type: "submit" });
+    const submitButton = screen.getByRole("button", {
+      type: "submit",
+      name: "Search",
+    });
     fireEvent.click(submitButton);
 
     // Simulate hamburger dropdown click

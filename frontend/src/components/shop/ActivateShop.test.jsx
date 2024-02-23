@@ -78,9 +78,9 @@ describe("PUT /shop/activate/:token", () => {
       "Activation token is invalid or has expired"
     );
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of shopAuth slice in Redux store

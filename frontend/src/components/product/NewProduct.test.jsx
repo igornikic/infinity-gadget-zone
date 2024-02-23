@@ -93,6 +93,11 @@ describe("POST /product/new", () => {
     const submitButton = screen.getByRole("button", { name: "Create Product" });
     fireEvent.submit(submitButton);
 
+    // Wait for loading to end
+    await act(async () => {
+      store.getState().newProduct.loading === false;
+    });
+
     // Wait for the "Product Created Successfully!" message to appear
     await waitFor(() => {
       expect(
@@ -108,15 +113,97 @@ describe("POST /product/new", () => {
     expect(newProductState.success).toBe(true);
     expect(newProductState.error).toBe(null);
 
-    // Wait 5s for success state to be reset
+    // Wait 500ms for success state to be reset
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of newProduct slice in Redux store
     const newProductState2 = store.getState().newProduct;
 
     expect(newProductState2.success).toBe(false);
+  });
+
+  it("should test '‹' , '›' and remove image buttons", async () => {
+    // Render NewProduct component
+    render(<NewProduct />, { initialState });
+
+    // Assert that "Create Product" heading is present
+    const createProductHeading = screen.getByRole("heading", {
+      name: "Create Product",
+    });
+    expect(createProductHeading).toBeInTheDocument();
+
+    const testProduct = new File(["product"], "product.png", {
+      type: "image/png",
+    });
+
+    // Define an object with input field labels and their corresponding values
+    const inputFields = {
+      "Product Name": ptd.name,
+      "Product Price": ptd.price,
+      "Product Stock": ptd.stock,
+      Description: ptd.description,
+      "Product Category": ptd.category,
+    };
+
+    // Set values for each input field based on the label
+    for (const [label, value] of Object.entries(inputFields)) {
+      const input = screen.getByLabelText(label);
+      fireEvent.change(input, { target: { value } });
+    }
+
+    // Simulate file input change for Product Images field and add 3 images
+    const productImageInput = screen.getByLabelText("Product Images");
+    fireEvent.change(productImageInput, {
+      target: { files: [testProduct, testProduct, testProduct] },
+    });
+
+    // Wait for the '‹' and '›' buttons to become visible after image upload
+    await waitFor(() => {
+      const prevButtons = screen.getAllByLabelText("‹");
+      const nextButtons = screen.getAllByLabelText("›");
+      expect(prevButtons.length).toBeGreaterThanOrEqual(1);
+      expect(nextButtons.length).toBeGreaterThanOrEqual(1);
+    });
+
+    // Get the '‹' and '›' buttons associated with the first image
+    const prevButton = screen.getAllByLabelText("‹")[2];
+    const nextButton = screen.getAllByLabelText("›")[2];
+
+    // Simulate click event on the '›' button
+    fireEvent.click(nextButton);
+
+    // Simulate click event on the '‹' button
+    fireEvent.click(prevButton);
+
+    // Get the 'X' button associated with the first image
+    await waitFor(() => {
+      const removeButtons = screen.getAllByRole("button", { name: "X" });
+      expect(removeButtons.length).toBeGreaterThanOrEqual(1);
+    });
+
+    // Simulate image removing on the 'X' button
+    const removeImageButton = screen.getAllByRole("button", { name: "X" })[2];
+    fireEvent.click(removeImageButton);
+
+    // Get the '‹' and '›' buttons associated with the first image
+    const prevButton2 = screen.getAllByLabelText("‹")[1];
+    const nextButton2 = screen.getAllByLabelText("›")[1];
+
+    // Simulate click event on the '›' button
+    fireEvent.click(nextButton2);
+
+    // Simulate click event on the '‹' button
+    fireEvent.click(prevButton2);
+
+    // Simulate image removing on the 'X' button
+    const removeImageButton2 = screen.getAllByRole("button", { name: "X" })[1];
+    fireEvent.click(removeImageButton2);
+
+    // Simulate image removing on the 'X' button
+    const removeImageButton3 = screen.getAllByRole("button", { name: "X" })[0];
+    fireEvent.click(removeImageButton3);
   });
 
   it("should return an error if name is shorter than 3 characters", async () => {
@@ -189,9 +276,9 @@ describe("POST /product/new", () => {
       "Product name must be between 3 and 100 characters long"
     );
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of newProduct slice in Redux store

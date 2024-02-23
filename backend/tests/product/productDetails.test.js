@@ -20,7 +20,7 @@ cloudinary.config({
 
 // Function for expiring product view
 const expireView = async () => {
-  const product = await Product.findById("64e736e4c8509ba9f32562ee");
+  const product = await Product.findById("658dad0fac4c8d58272469ea");
 
   const expirationTime = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
@@ -44,7 +44,7 @@ afterAll(async () => {
 describe("GET /api/product/:id", () => {
   it("should get product details even when not logged in", (done) => {
     request(app)
-      .get(`/api/product/64e736e4c8509ba9f32562ee`)
+      .get(`/api/product/658dad0fac4c8d58272469ea`)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(200)
@@ -53,7 +53,7 @@ describe("GET /api/product/:id", () => {
 
         // Assert that the response contains product
         expect(res.body).toHaveProperty("product");
-        expect(res.body.product).toHaveProperty("name", "Test Product");
+        expect(res.body.product).toHaveProperty("name", "Test Product 1");
 
         done();
       });
@@ -73,7 +73,7 @@ describe("GET /api/product/:id", () => {
 
       // Get product details
       const productRes = await request(app)
-        .get(`/api/product/64e736e4c8509ba9f32562ee`)
+        .get(`/api/product/658dad0fac4c8d58272469ea`)
         .set("Accept", "application/json")
         .set("Cookie", [`user_token=${userToken}`])
         .expect("Content-Type", /json/)
@@ -81,7 +81,7 @@ describe("GET /api/product/:id", () => {
 
       // Assert that the response contains product
       expect(productRes.body).toHaveProperty("product");
-      expect(productRes.body.product).toHaveProperty("name", "Test Product");
+      expect(productRes.body.product).toHaveProperty("name", "Test Product 1");
 
       await expireView();
       // Logout
@@ -107,7 +107,7 @@ describe("GET /api/product/:id", () => {
 
       // Get product details
       const productRes = await request(app)
-        .get(`/api/product/64e736e4c8509ba9f32562ee`)
+        .get(`/api/product/658dad0fac4c8d58272469ea`)
         .set("Accept", "application/json")
         .set("Cookie", [`shop_token=${sellerToken}`])
         .expect("Content-Type", /json/)
@@ -115,7 +115,7 @@ describe("GET /api/product/:id", () => {
 
       // Assert that the response contains product
       expect(productRes.body).toHaveProperty("product");
-      expect(productRes.body.product).toHaveProperty("name", "Test Product");
+      expect(productRes.body.product).toHaveProperty("name", "Test Product 1");
 
       // Logout
       await request(app).get("/api/shop/logout").expect(200);

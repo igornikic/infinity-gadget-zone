@@ -39,9 +39,9 @@ describe("POST /password/forgot", () => {
     expect(forgotPasswordState.email).toBe("test@gmail.com");
     expect(forgotPasswordState.error).toBe(null);
 
-    // Wait 5s for message to be cleared
+    // Wait 500ms for message to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of forgotPassword slice in Redux store
@@ -95,9 +95,9 @@ describe("POST /password/forgot", () => {
     expect(forgotPasswordState.email).toBe("");
     expect(forgotPasswordState.error).toBe("User not found with this email");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of forgotPassword slice in Redux store
@@ -141,9 +141,9 @@ describe("POST /shop/password/forgot", () => {
     expect(forgotPasswordState.email).toBe("test@gmail.com");
     expect(forgotPasswordState.error).toBe(null);
 
-    // Wait 5s for message to be cleared
+    // Wait 500ms for message to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of forgotPassword slice in Redux store
@@ -197,9 +197,9 @@ describe("POST /shop/password/forgot", () => {
     expect(forgotPasswordState.email).toBe("");
     expect(forgotPasswordState.error).toBe("Shop not found with this email");
 
-    // Wait 5s for error to be cleared
+    // Wait 500ms for error to be cleared
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
     // Check state of forgotPassword slice in Redux store

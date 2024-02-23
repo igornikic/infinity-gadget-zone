@@ -1,0 +1,23 @@
+.policy-container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.policy-container h2 {
+  padding: 30px 0;
+}
+.policy-container h3 {
+  padding: 20px 0;
+}
+
+.policy-container h4 {
+  padding: 15px 0;
+}
+
+.policy-container ul {
+  margin-left: 30px;
+}
+
+.policy-container ul li {
+  padding: 8px;
+}

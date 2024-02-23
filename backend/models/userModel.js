@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  couponAttempt: {
+    count: Number,
+    expiry: Date,
+  },
 });
 
 // Encrypting password before saving user
@@ -99,6 +103,24 @@ userSchema.methods.getResetPasswordToken = function () {
   this.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
 
   return resetToken;
+};
+
+// Check if coupon attempt limit is exceeded and update
+userSchema.methods.checkAndUpdateCouponAttempts = async function () {
+  if (this.couponAttempt.count) {
+    // Increment coupon attempt count
+    this.couponAttempt.count += 1;
+  } else {
+    this.couponAttempt.count = 1;
+  }
+
+  if (this.couponAttempt.count >= 10) {
+    // Set expiry time for the next 20 minutes
+    this.couponAttempt.expiry = Date.now() + 20 * 60 * 1000;
+  }
+
+  // Save updated user data to the database
+  await this.save();
 };
 
 export default mongoose.model("User", userSchema);

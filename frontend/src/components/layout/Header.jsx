@@ -43,8 +43,10 @@ const Header = () => {
     isSeller,
     error: shopError,
   } = useSelector((state) => state.shopAuth);
+  // Extract cart state from redux store
+  const { cartItems } = useSelector((state) => state.cart);
 
-  const [isNavVisible, setNavVisible] = useState(true);
+  const [isNavVisible, setIsNavVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
 
@@ -56,11 +58,6 @@ const Header = () => {
   // Toggle dropdown onClick
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  };
-
-  // Toggle nav visibility for smaller devices
-  const toggleNav = () => {
-    setNavVisible(!isNavVisible);
   };
 
   // Dispatch logout action to the Redux store
@@ -112,6 +109,21 @@ const Header = () => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      // Always visible for desktop devices
+      setIsNavVisible(window.innerWidth > 768);
+    };
+
+    // Attach resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <header>
       {/* Display error message if there is an error in the user slice */}
@@ -150,7 +162,9 @@ const Header = () => {
             className="hamburger-icon"
             id="icon"
             data-testid="hamburger-icon"
-            onClick={toggleNav}
+            onClick={() => {
+              setIsNavVisible(!isNavVisible);
+            }}
           >
             <div className={`icon-1 ${isNavVisible ? "a" : ""}`} id="a"></div>
             <div className={`icon-2 ${isNavVisible ? "c" : ""}`} id="b"></div>
@@ -159,7 +173,9 @@ const Header = () => {
         </div>
 
         {/* Navbar links for smaller devices */}
-        <div className={`flex-center ${isNavVisible ? "show-nav" : ""}`}>
+        <div
+          className={`flex-center ${isNavVisible ? "show-nav" : "hide-nav"}`}
+        >
           {/* Profile dropdown */}
           <div
             className="avatar dropdown"
@@ -282,9 +298,9 @@ const Header = () => {
             <OrderIcon />
           </Link>
           {/* Cart link */}
-          <Link to="#" className="cart" title="Cart">
+          <Link to="/cart" className="cart" title="Cart">
             <CartIcon />
-            <span className="cart-count">1</span>
+            <span className="cart-count">{cartItems.length}</span>
           </Link>
         </div>
       </nav>

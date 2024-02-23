@@ -1,0 +1,25 @@
+.cookie-consent {
+  position: fixed;
+  bottom: 5%;
+  left: 5%;
+  transform: translate(-5%, -5%);
+  padding: 20px;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.cookie-consent p {
+  margin: 5px 0;
+}
+
+.cookie-consent a {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+.cookie-consent button {
+  padding: 5px 10px;
+  margin: 2px auto;
+  width: 50%;
+  cursor: pointer;
+}
