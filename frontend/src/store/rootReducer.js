@@ -7,6 +7,8 @@ import forgotPasswordReducer from "../features/forgotPassword/forgotPasswordSlic
 
 // Import shop related reducers
 import shopAuthReducer from "../features/shop/shopAuthSlice";
+import shopInfoReducer from "../features/shop/shopInfoSlice";
+import shopReducer from "../features/shop/shopSlice";
 
 // Import product related reducers
 import newProductReducer from "../features/product/newProductSlice";
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
   forgotPassword: forgotPasswordReducer,
   // Shop related reducers
   shopAuth: shopAuthReducer,
+  shopInfo: shopInfoReducer,
+  shop: shopReducer,
   // Product related reducers
   newProduct: newProductReducer,
   products: productsReducer,

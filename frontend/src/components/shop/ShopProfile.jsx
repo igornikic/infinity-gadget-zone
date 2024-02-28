@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 import Loader from "../layout/Loader";
 import PageTitle from "../layout/PageTitle";
 import Background from "../layout/Background";
 import Alert from "../utils/Alert";
 
-import { shopInfo, clearErrors } from "../../features/shop/shopInfoSlice";
+import { clearErrors } from "../../features/shop/shopAuthSlice";
 import { formatDate } from "../utils/formatDate";
 
 import {
@@ -16,23 +16,14 @@ import {
   PhoneIcon,
   CalendarIcon,
 } from "../../icons/FormIcons";
-import { ChatIcon } from "../../icons/ChatIcons";
+import { PartnerIcon } from "../../icons/PaymentIcons";
 
 import "../Profile.css";
 import "../Form.css";
 
-const ShopInfo = () => {
-  const dispatch = useDispatch();
-  const { id } = useParams();
-
-  // Extract shopInfo state from redux store
-  const { shop, loading, error } = useSelector((state) => state.shopInfo);
-
-  // Dispatch shopInfo on component mount
-  useEffect(() => {
-    dispatch(shopInfo(id));
-  }, []);
-
+const ShopProfile = () => {
+  // Extract shopAuth state from redux store
+  const { shop, loading, error } = useSelector((state) => state.shopAuth);
   return (
     <>
       {/* Page title */}
@@ -58,13 +49,10 @@ const ShopInfo = () => {
               className="logo"
             />
           </div>
-          {/* Chat button */}
-          <Link to="#">
+          {/* Edit shop link */}
+          <Link to="/shop/me/update">
             <button type="button" className="submit-button">
-              <div className="profile-chat">
-                Chat &nbsp;
-                <ChatIcon />
-              </div>
+              Edit Shop
             </button>
           </Link>
         </div>
@@ -100,8 +88,7 @@ const ShopInfo = () => {
           </div>
           <div>
             <p>
-              Address
-              <AddressIcon />
+              Address <AddressIcon />
             </p>
             <strong>
               <a
@@ -116,8 +103,7 @@ const ShopInfo = () => {
         <div className="profile-col">
           <div>
             <p>
-              ZIP Code
-              <AddressIcon />
+              ZIP Code <AddressIcon />
             </p>
             <strong>{shop.zipCode}</strong>
           </div>
@@ -129,10 +115,17 @@ const ShopInfo = () => {
               {Object.keys(shop).length !== 0 && formatDate(shop.createdAt)}
             </strong>
           </div>
-          {/* Shop products button */}
-          <Link to={`/products/shop/${shop._id}`}>
+          <div>
+            <p>Available Balance </p>
+            <strong>${shop.availableBalance}</strong>
+          </div>
+          {/* Withdraw button */}
+          <Link to="#">
             <button type="button" className="submit-button">
-              Shop Products
+              <div className="profile-withdraw">
+                Withdraw &nbsp;
+                <PartnerIcon />
+              </div>
             </button>
           </Link>
         </div>
@@ -141,4 +134,4 @@ const ShopInfo = () => {
   );
 };
 
-export default ShopInfo;
+export default ShopProfile;

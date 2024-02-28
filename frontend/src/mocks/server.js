@@ -3,6 +3,7 @@ import * as authHandlers from "./handlers/user/authHandler";
 import * as userHandlers from "./handlers/user/userHandler";
 import * as passwordHandlers from "./handlers/password/passwordHandler";
 import * as shopAuthHandlers from "./handlers/shop/shopAuthHandler";
+import * as shopHandlers from "./handlers/shop/shopHandler";
 import * as productHandlers from "./handlers/product/productHandler";
 import * as cartHandlers from "./handlers/cart/cartHandler";
 
@@ -12,6 +13,7 @@ const allHandlers = [
   ...Object.values(userHandlers),
   ...Object.values(passwordHandlers),
   ...Object.values(shopAuthHandlers),
+  ...Object.values(shopHandlers),
   ...Object.values(productHandlers),
   ...Object.values(cartHandlers),
 ];

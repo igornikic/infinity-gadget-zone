@@ -8,6 +8,8 @@ const shopSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter shop name"],
     unique: true,
+    minLength: [3, "Your shop name must be at least 3 characters long"],
+    maxLength: [30, "Your shop name cannot exceed 30 characters"],
   },
   shopEmail: {
     type: String,

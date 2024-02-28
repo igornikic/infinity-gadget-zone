@@ -248,7 +248,7 @@ const Header = () => {
                     </li>
                     <li>
                       {/* Profile link */}
-                      <Link to="/me">
+                      <Link to="/shop/me">
                         <pre>
                           <ProfileIcon /> Profile
                         </pre>

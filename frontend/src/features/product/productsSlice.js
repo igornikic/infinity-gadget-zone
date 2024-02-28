@@ -44,16 +44,18 @@ export const getShopProducts = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      // Encode the value to handle special characters like '&' in URLs
-      const encodedKeyword = encodeURIComponent(keyword);
+      let link = `/api/products/shop/${id}?page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&ratings[gte]=${rating}&sort=${sort}`;
 
-      let link = `/api/products/shop/${id}?keyword=${encodedKeyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&ratings[gte]=${rating}&sort=${sort}`;
+      if (keyword) {
+        // Encode the keyword to handle special characters like '&' in URLs
+        const encodedKeyword = encodeURIComponent(keyword);
+        link += `&keyword=${encodedKeyword}`;
+      }
 
-      if (category != "") {
-        // Encode the value to handle special characters like '&' in URLs
+      if (category !== "") {
+        // Encode the category to handle special characters like '&' in URLs
         const encodedCategory = encodeURIComponent(category);
-
-        link = `/api/products/shop/${id}?keyword=${encodedKeyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${encodedCategory}&ratings[gte]=${rating}&sort=${sort}`;
+        link += `&category=${encodedCategory}`;
       }
 
       const { data } = await axios.get(link);

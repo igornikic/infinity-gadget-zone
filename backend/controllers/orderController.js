@@ -148,7 +148,7 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    order,
+    order, // Remove in production
   });
 });
 
