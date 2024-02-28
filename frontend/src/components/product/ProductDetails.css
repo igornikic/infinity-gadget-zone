@@ -11,19 +11,6 @@
   padding: 20px;
 }
 
-.breadcrumb-navigation {
-  width: 90%;
-  margin: 0 auto;
-}
-
-.breadcrumb-navigation a {
-  color: var(--black);
-}
-
-.breadcrumb-navigation a:hover {
-  text-decoration: underline;
-}
-
 .product-image {
   order: 1; /* Display image above details on small screens */
   margin-bottom: 20px;
@@ -77,19 +64,6 @@ section .social-icons a svg,
   width: 24px;
   cursor: pointer;
   height: 24px;
-}
-
-/* Disabled button */
-
-button:disabled:hover,
-button:disabled {
-  background-color: #a0a0a0;
-  color: #555;
-  cursor: not-allowed;
-}
-
-button:disabled span {
-  display: none;
 }
 
 @media screen and (max-width: 767.9px) {

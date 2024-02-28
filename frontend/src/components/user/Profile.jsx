@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 import Loader from "../layout/Loader";
 import PageTitle from "../layout/PageTitle";
+import Background from "../layout/Background";
 import Alert from "../utils/Alert";
 
 import { clearErrors } from "../../features/user/authSlice";
 
-import "./Profile.css";
+import "../Profile.css";
 import "../Form.css";
 
 const Profile = () => {
@@ -26,10 +27,13 @@ const Profile = () => {
       {/* Display error message if there is an error */}
       {error && <Alert message={error} clear={clearErrors} type={"error"} />}
 
+      {/* Background animation */}
+      <Background />
+
       <div className="profile-row">
         <div className="profile-col">
           <h1>{user.username} Profile</h1>
-          <div className="profile-avatar">
+          <div className="profile-image">
             {/* Avatar image */}
             <img
               src={user.avatar ? user.avatar.url : user.picture}
@@ -39,14 +43,12 @@ const Profile = () => {
               preload="auto"
             />
           </div>
-          <div>
-            {/* Profile update link */}
-            <Link to="/me/update">
-              <button type="button" className="submit-button">
-                Edit Profile
-              </button>
-            </Link>
-          </div>
+          {/* Profile update link */}
+          <Link to="/me/update">
+            <button type="button" className="submit-button">
+              Edit Profile
+            </button>
+          </Link>
         </div>
         {/* User info */}
         <div className="profile-col">
@@ -81,14 +83,12 @@ const Profile = () => {
                     .join("/")}
                 </strong>
               </div>
-              <div>
-                {/* Update password link */}
-                <Link to="/password/update">
-                  <button type="button" className="submit-button">
-                    Change Password
-                  </button>
-                </Link>
-              </div>
+              {/* Update password link */}
+              <Link to="/password/update">
+                <button type="button" className="submit-button">
+                  Change Password
+                </button>
+              </Link>
             </>
           )}
         </div>

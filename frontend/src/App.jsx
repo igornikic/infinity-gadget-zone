@@ -26,6 +26,9 @@ const NewPassword = lazy(() =>
 const NewShop = lazy(() => import("./components/shop/NewShop"));
 const ActivateShop = lazy(() => import("./components/shop/ActivateShop"));
 const LoginShop = lazy(() => import("./components/shop/LoginShop"));
+const ShopInfo = lazy(() => import("./components/shop/ShopInfo"));
+const ShopProfile = lazy(() => import("./components/shop/ShopProfile"));
+const UpdateShop = lazy(() => import("./components/shop/UpdateShop"));
 
 // Product Imports
 const NewProduct = lazy(() => import("./components/product/NewProduct"));
@@ -75,11 +78,21 @@ const App = () => {
           <Route path="/shop/activate/:token" element={<ActivateShop />} />
           <Route path="/shop/login" element={<LoginShop />} />
           <Route path="/shop/password/forgot" element={<ForgotPassword />} />
+          <Route path="/shop/info/:id" element={<ShopInfo />} />
+          <Route
+            path="/shop/me"
+            element={<ProtectedRoute isSeller={true} element={ShopProfile} />}
+          />
+          <Route
+            path="/shop/me/update"
+            element={<ProtectedRoute isSeller={true} element={UpdateShop} />}
+          />
           {/* Product routes */}
           <Route
             path="/product/new"
             element={<ProtectedRoute isSeller={true} element={NewProduct} />}
           />
+          <Route path="/products/shop/:id" element={<GetShopProducts />} />
           <Route
             path="/products/shop/:id/:keyword"
             element={<GetShopProducts />}

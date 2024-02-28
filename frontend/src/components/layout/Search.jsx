@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import VoiceSearch from "./VoiceSearch";
 import { SearchIcon } from "../../icons/NavIcons";
@@ -7,6 +7,7 @@ import "./Search.css";
 
 const Search = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // State for search keyword
   const [keyword, setKeyword] = useState("");
@@ -17,7 +18,16 @@ const Search = () => {
 
     // Check if keyword is not empty
     if (keyword.trim()) {
-      navigate(`/search/${keyword}`);
+      let currentURL = location.pathname;
+
+      if (currentURL.includes("/products/shop")) {
+        // Navigate to /products/shop/id/keyword
+        currentURL = constructURLWithKeyword(keyword);
+      } else {
+        // Navigate to /search/keyword
+        currentURL = `/search/${encodeURIComponent(keyword)}`;
+      }
+      navigate(currentURL);
     }
   };
 
@@ -25,8 +35,24 @@ const Search = () => {
     // Check if form reference exists and the transcript is not empty
     if (formRef.current && transcript.trim()) {
       setKeyword(transcript);
-      navigate(`/search/${transcript}`);
+      let currentURL = location.pathname;
+
+      if (currentURL.includes("/products/shop")) {
+        // Navigate to /products/shop/id/keyword
+        currentURL = constructURLWithKeyword(transcript);
+      } else {
+        // Navigate to /search/${transcript}
+        currentURL = `/search/${encodeURIComponent(transcript)}`;
+      }
+      navigate(currentURL);
     }
+  };
+
+  const constructURLWithKeyword = (keywordValue) => {
+    const urlParts = location.pathname.split("/");
+    // Url is /products/shop/id/keyword where keyword is always at 4th index
+    urlParts[4] = encodeURIComponent(keywordValue);
+    return urlParts.join("/");
   };
 
   return (

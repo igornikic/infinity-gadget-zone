@@ -243,7 +243,7 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    user: updatedUser,
+    user: updatedUser, // Remove in production
   });
 });
 
@@ -305,7 +305,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    user,
+    user, // Remove in production
   });
 });
 

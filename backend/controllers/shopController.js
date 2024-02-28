@@ -179,10 +179,12 @@ export const loginShop = catchAsyncErrors(async (req, res, next) => {
 });
 
 // @desc    Get Shop Info by ID
-// @route   GET /api/shop/:id
+// @route   GET /api/shop/info/:id
 // @access  Public
 export const getShopInfo = catchAsyncErrors(async (req, res, next) => {
-  const shop = await Shop.findById(req.params.id);
+  const shop = await Shop.findById(req.params.id).select(
+    "logo shopName shopEmail phoneNumber address zipCode createdAt"
+  );
 
   if (!shop) {
     return next(
@@ -269,7 +271,7 @@ export const updateShop = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    shop: updatedShop,
+    shop: updatedShop, // Remove in production
   });
 });
 

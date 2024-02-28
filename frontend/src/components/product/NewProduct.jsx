@@ -149,6 +149,7 @@ const NewProduct = () => {
               placeholder="Product Price"
               onChange={onChange}
               autoComplete="off"
+              step="0.01"
               required
             />
           </div>
