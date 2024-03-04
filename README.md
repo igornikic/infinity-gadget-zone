@@ -4,7 +4,7 @@
 
 # Features ⭐⭐⭐
 
-For list of all features see [Wiki](https://github.com/igornikic/infinity-gadget-zone/wiki/_new).
+For list of all features see [Wiki](https://github.com/igornikic/infinity-gadget-zone/wiki).
 
 <br>
 
